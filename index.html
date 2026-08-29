@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Learning OS</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#18202a;--muted:#6c7683;--line:#e5e9f0;--accent:#2f6fed;--soft:#eaf1ff;--good:#1f8f5f;--warn:#a66b10;--bad:#c2414d;--shadow:0 10px 30px rgba(31,41,55,.06)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea,select{font:inherit}.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}aside{background:#111827;color:#fff;padding:24px 16px;position:sticky;top:0;height:100vh}
+.brand{font-weight:850;font-size:20px;margin:0 8px 24px}.brand small{display:block;color:#9ca3af;font-size:12px;font-weight:500;margin-top:5px}
+nav button{width:100%;text-align:left;border:0;background:transparent;color:#cbd5e1;padding:11px 12px;border-radius:10px;margin:3px 0;cursor:pointer}nav button.active,nav button:hover{background:#1f2937;color:#fff}
+main{padding:32px;max-width:1300px;width:100%;margin:auto}.page{display:none}.page.active{display:block}h1{font-size:30px;margin:0 0 6px}.subtitle{color:var(--muted);margin-bottom:24px}
+.grid{display:grid;gap:16px}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.metric .label{font-size:13px;color:var(--muted)}.metric .value{font-size:28px;font-weight:850;margin-top:6px}.metric .note{font-size:12px;color:var(--muted);margin-top:5px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.push{margin-left:auto}.section-title{font-size:18px;font-weight:850;margin:26px 0 12px}
+.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:750}.primary{background:var(--accent);color:white}.secondary{background:#eef2f7;color:#26313d}.danger{background:#ffe8ea;color:#a61b29}.goodbtn{background:#e8f7ef;color:#176b48}.warnbtn{background:#fff4df;color:#8a5a12}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;background:var(--soft);color:var(--accent);font-size:12px;font-weight:750}.muted{color:var(--muted)}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.practice{margin-bottom:16px}.practice .cn{font-weight:800;margin:10px 0}.practice textarea{width:100%;min-height:100px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}
+.model{margin-top:12px;padding:13px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);display:none}.model.show{display:block}.model strong{display:block;margin-bottom:6px}.ai-correction{margin-top:12px;padding:14px;border-radius:12px;background:#fbfcff;border:1px solid #dfe7f6;display:none}.ai-correction.show{display:block}.ai-correction h4{margin:12px 0 6px}.errline{padding:7px 0;border-bottom:1px solid var(--line)}.chunk{display:inline-block;margin:3px;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#285eb8;font-size:12px;font-weight:700}
+.answer-actions{margin-top:10px}.review-card{padding:12px 0;border-bottom:1px solid var(--line)}.review-card:last-child{border-bottom:0}
+.bank-grid{display:grid;grid-template-columns:1.25fr 1fr .7fr .65fr;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}.bank-grid:last-child{border-bottom:0}.expression{font-weight:850}.meaning{color:var(--muted);font-size:13px;margin-top:4px}
+.search{padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:280px}.select{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:12px;text-transform:uppercase;color:var(--muted)}
+.progress-row{display:grid;grid-template-columns:155px 1fr 48px;gap:12px;align-items:center;margin:12px 0}.bar{height:9px;background:#edf0f5;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:var(--accent)}
+.notice{border:1px solid #d8e4ff;background:#f2f6ff;border-radius:12px;padding:12px 14px}.writing textarea{width:100%;min-height:300px;border:1px solid var(--line);border-radius:12px;padding:14px;resize:vertical}
+.kpi{font-size:13px;color:var(--muted)}.kpi b{font-size:18px;color:var(--text)}.due{background:#fff7e6;border:1px solid #f2d69a;border-radius:12px;padding:12px}
+.tool-card{margin:14px 0}.tool-card summary{cursor:pointer;font-weight:850}.tool-card textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;resize:vertical}
+.kind-error{background:#fff4df;color:#8a5a12}.kind-review{background:#e8f7ef;color:#176b48}.kind-new{background:#eaf1ff;color:#2f6fed}.correction-note{margin-top:10px;padding:10px 12px;border:1px solid #cfe9da;background:#eefaf3;border-radius:10px}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{height:auto;position:static;padding:14px}.brand{margin-bottom:10px}nav{display:flex;overflow:auto}.grid-4,.grid-2{grid-template-columns:1fr 1fr}main{padding:20px}.bank-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.grid-4,.grid-2{grid-template-columns:1fr}main{padding:15px}h1{font-size:25px}.search{min-width:100%}}
+
+.topic-hero{background:linear-gradient(180deg,#fff,#f8fbff);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.topic-prompt{font-size:19px;line-height:1.55;font-weight:800;margin:12px 0 18px}.idea-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px}.idea-card h3{font-size:14px;margin:0 0 9px}.idea-card ul{margin:0;padding-left:19px}.idea-card li{margin:7px 0;line-height:1.5}.topic-vocab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.vocab-item{border:1px solid var(--line);border-radius:11px;padding:10px;background:#fff}.vocab-item b{display:block}.vocab-item span{font-size:12px;color:var(--muted)}.topic-note{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}.topic-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.topic-mini{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:#fff}.topic-mini:hover{border-color:#b7c8eb}.topic-mini .t{font-weight:800}.topic-mini .m{font-size:12px;color:var(--muted);margin-top:5px}.fam-weak{background:#fff4df;color:#8a5a12}.fam-ok{background:#e8f7ef;color:#176b48}.fam-new{background:#eef2f7;color:#5d6774}@media(max-width:900px){.topic-list{grid-template-columns:1fr 1fr}.topic-vocab{grid-template-columns:1fr}}@media(max-width:620px){.topic-list{grid-template-columns:1fr}}
+
+.mobile-nav{display:none}
+.sync-badge{font-size:12px;padding:5px 8px;border-radius:999px;background:#eef2f7;color:#56606c;font-weight:750}
+.install-banner{display:none;margin-bottom:14px}
+@media(max-width:760px){
+  body{padding-bottom:74px}
+  .app{display:block}
+  aside{display:none}
+  main{padding:14px 12px 24px;max-width:none}
+  .mobile-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:1000;background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 22px rgba(31,41,55,.08);padding-bottom:env(safe-area-inset-bottom)}
+  .mobile-nav button{border:0;background:#fff;padding:9px 3px 8px;color:#687381;font-size:11px;font-weight:800;cursor:pointer}
+  .mobile-nav button.active{color:var(--accent);background:#f7f9fd}
+  .mobile-nav span{display:block;font-size:16px;line-height:1.1;margin-bottom:2px}
+  .row{align-items:flex-start}
+  .push{margin-left:0}
+  .topic-hero,.card{border-radius:14px}
+  .practice textarea{min-height:135px;font-size:16px}
+  .writing textarea{min-height:360px;font-size:16px}
+  .topic-prompt{font-size:17px}
+  .section-title{margin-top:20px}
+  .install-banner{display:block}
+}
+
+
+.speaking-hero{background:linear-gradient(180deg,#fff,#f8fbff);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.speaking-question{padding:12px 0;border-bottom:1px solid var(--line);line-height:1.5}.speaking-question:last-child{border-bottom:0}
+.cue-card{border:1px solid #bfd0f6;background:#f5f8ff;border-radius:14px;padding:16px}.cue-card h3{margin:0 0 10px}.cue-card ul{margin:8px 0 0;padding-left:20px}.cue-card li{margin:7px 0}
+.timer-box{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px;border-radius:14px;background:#111827;color:white}.timer-display{font-size:34px;font-weight:850;font-variant-numeric:tabular-nums;min-width:105px}.timer-label{font-size:12px;opacity:.75}
+.score-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.score-grid label{font-size:12px;color:var(--muted)}.score-grid select{width:100%;margin-top:5px}
+.speak-note{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}
+.speaking-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.speaking-mini{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer}.speaking-mini:hover{border-color:#b7c8eb}.speaking-mini .t{font-weight:800}.speaking-mini .m{font-size:12px;color:var(--muted);margin-top:5px}
+@media(max-width:900px){.speaking-list{grid-template-columns:1fr 1fr}.score-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.speaking-list{grid-template-columns:1fr}.score-grid{grid-template-columns:1fr 1fr}.timer-display{font-size:30px}}
+@media(max-width:760px){.mobile-nav{grid-template-columns:repeat(6,1fr)}.mobile-nav button{font-size:10px;padding-left:1px;padding-right:1px}}
+
+
+/* Product UI 2.3.2 */
+:root{
+  --bg:#f4f6fa;--panel:#fff;--text:#151b26;--muted:#768195;--line:#e5e9f0;
+  --accent:#4263eb;--accent-deep:#314fd1;--soft:#eef2ff;--good:#18865c;--warn:#9a6719;
+  --shadow:0 10px 30px rgba(26,38,63,.055);--shadow-hover:0 14px 34px rgba(26,38,63,.09);
+}
+*{-webkit-tap-highlight-color:transparent}
+body{
+  background:
+    radial-gradient(circle at 92% -8%,rgba(82,104,225,.085),transparent 24rem),
+    linear-gradient(180deg,#f7f8fc 0,#f4f6fa 34rem);
+  color:var(--text);letter-spacing:-.012em;
+}
+aside{width:238px;background:linear-gradient(180deg,#111827 0%,#182236 100%);padding:27px 17px}
+.brand{display:flex;align-items:center;gap:11px;font-size:19px;font-weight:820;letter-spacing:-.035em;margin-bottom:25px}
+.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#6378ff,#405be3);font-size:16px;box-shadow:0 8px 20px rgba(55,77,203,.3)}
+.brand small{display:block;margin-top:4px;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#8f9bb0}
+.nav-label{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#657087;font-weight:800;padding:14px 12px 5px}
+nav button{font-size:13px;font-weight:650;padding:10px 12px;border-radius:11px;margin-bottom:2px;transition:.16s ease}
+nav button.active{background:rgba(255,255,255,.11);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+main{padding:38px 42px 58px;max-width:1240px}
+h1{font-size:38px;line-height:1.04;letter-spacing:-.05em;margin:2px 0 0}
+h2{font-size:19px;letter-spacing:-.035em;margin:3px 0 0}
+.subtitle{font-size:14px;line-height:1.55;margin-top:7px;color:#7a8496}
+.eyebrow{font-size:9px;font-weight:850;letter-spacing:.14em;color:#8792a5}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#7a8496;font-weight:900;cursor:pointer}
+.card{border:1px solid rgba(224,229,237,.95);border-radius:19px;padding:19px;background:rgba(255,255,255,.96);box-shadow:var(--shadow)}
+.home-metrics{gap:12px}
+.metric{min-height:130px;display:flex;flex-direction:column;justify-content:center}
+.metric .label{font-size:11px;font-weight:750;letter-spacing:.025em;color:#7a8496}
+.metric .value{font-size:34px;line-height:1;letter-spacing:-.055em;margin:9px 0 7px}
+.metric .note{font-size:12px;color:#8993a3;line-height:1.35}
+.target-card{background:linear-gradient(145deg,#182035,#24365f);color:#fff;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px}
+.target-card .label,.target-card .note{color:#b7c2d8}
+.metric-icon{display:grid;place-items:center;min-width:68px;height:68px;border-radius:20px;background:rgba(255,255,255,.095);font-size:23px;font-weight:860;letter-spacing:-.04em}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin:30px 0 12px}.section-head.compact{margin-top:28px}
+.today-focus{background:linear-gradient(135deg,#ffffff 0%,#f7f9ff 100%);border-color:#dfe5f3}
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:11px}
+.quick-card{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px 15px;cursor:pointer;color:var(--text);transition:.16s ease}
+.quick-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}.quick-card:active{transform:scale(.99)}
+.quick-card b{display:block;font-size:13px}.quick-card small{display:block;color:#8a94a5;font-size:11px;margin-top:3px}
+.quick-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#eef2ff;color:#4263eb;font-weight:850}
+.quick-card:nth-child(2) .quick-icon{background:#f0ecff;color:#7456d8}.quick-card:nth-child(3) .quick-icon{background:#eaf7f1;color:#238163}.quick-card:nth-child(4) .quick-icon{background:#fff3e4;color:#9a6719}
+.arrow{color:#9ba5b4;font-size:16px}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:780;font-size:13px}
+.mini-label{font-size:8px;letter-spacing:.12em;color:#9ba5b4}
+.insight-card{min-height:165px}
+.library-card{margin-top:14px;padding:0;overflow:hidden}.library-card summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer}.library-card summary::-webkit-details-marker{display:none}
+.library-card summary small{display:block;font-size:10px;color:#929bab;font-weight:500;margin-top:3px}.library-card[open] summary{border-bottom:1px solid var(--line)}.chev{color:#98a2b1}
+.library-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:5px 8px 10px}.library-grid .kpi{padding:12px 11px;font-size:10px;color:#8791a2}.library-grid .kpi b{display:block;font-size:21px;color:var(--text);margin-top:4px}
+.btn{border-radius:11px;padding:9px 14px;font-weight:720;transition:.14s ease}.btn:active{transform:scale(.98)}.btn.primary{background:linear-gradient(135deg,#4667ef,#3656de);box-shadow:0 7px 17px rgba(66,99,235,.17)}
+.search,.select,.practice textarea,.writing textarea,.topic-note,.speak-note,.tool-card textarea{border-color:#dfe4ec;border-radius:13px;outline:none;background:#fff;transition:.15s ease}
+.search:focus,.select:focus,.practice textarea:focus,.writing textarea:focus,.topic-note:focus,.speak-note:focus,.tool-card textarea:focus{border-color:#a6b7f2;box-shadow:0 0 0 3px rgba(66,99,235,.075)}
+.topic-hero,.speaking-hero{border-radius:21px;background:linear-gradient(145deg,#fff,#f8f9fe);border-color:#e0e6f1;box-shadow:var(--shadow)}
+.cue-card{border-radius:17px;background:linear-gradient(135deg,#f5f7ff,#f8f6ff);border-color:#dfe4f7}
+.idea-card,.vocab-item,.speaking-mini,.topic-mini{border-radius:14px;border-color:#e5e9f0}
+.timer-box{border-radius:17px;background:linear-gradient(135deg,#151d31,#253657)}
+.sync-badge{background:#edf2fb;color:#5e6c82;border-radius:999px;padding:6px 9px;font-size:10px}
+.settings-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:12px;margin-top:23px;margin-bottom:12px}
+.setting-card{display:grid;grid-template-columns:42px 1fr;gap:13px;align-items:start}.setting-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#eef2ff;color:#4263eb;font-weight:850;font-size:17px}.setting-copy b{font-size:14px}.setting-copy .meaning{margin-top:4px}.setting-body{grid-column:2;display:grid;gap:9px;margin-top:3px}
+.backup-card{margin-top:12px}.action-row{margin-top:14px}
+.mobile-nav{border-top-color:#e5e9f0}
+@media(max-width:1000px){.library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.settings-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+  body{padding-bottom:85px;background:#f5f7fb}
+  main{padding:20px 15px 31px}
+  h1{font-size:35px}
+  .topbar{margin-bottom:20px}
+  .home-metrics{grid-template-columns:1fr 1fr;gap:10px}
+  .metric{min-height:116px;padding:15px}
+  .target-card{grid-column:span 2;min-height:104px}
+  .metric .value{font-size:31px}
+  .quick-grid{grid-template-columns:1fr;gap:9px}
+  .quick-card{padding:13px 14px}
+  .card{border-radius:18px;padding:17px}
+  .topic-hero,.speaking-hero{padding:17px;border-radius:19px}
+  .library-grid{grid-template-columns:1fr 1fr}
+  .settings-grid{grid-template-columns:1fr}
+  .mobile-nav{
+    display:grid;left:8px;right:8px;bottom:7px;border:1px solid #e3e8ef!important;border-radius:20px;
+    overflow:hidden;background:rgba(255,255,255,.965);box-shadow:0 12px 36px rgba(29,42,65,.15);
+    padding:3px 4px calc(3px + env(safe-area-inset-bottom))
+  }
+  .mobile-nav button{background:transparent!important;color:#7d8898;padding:8px 1px 7px!important;border-radius:14px;font-size:9px!important;font-weight:760}
+  .mobile-nav button.active{background:#edf2ff!important;color:#4263eb}
+  .mobile-nav span{font-size:14px;margin-bottom:3px}
+}
+@media(max-width:390px){.mobile-nav button{font-size:8.5px!important}.metric .note{font-size:11px}}
+
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="IELTS OS">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+</head>
+<body>
+<div id="fatal-banner" style="display:none;position:fixed;z-index:9999;left:12px;right:12px;top:12px;background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;padding:12px 14px;border-radius:10px;font:14px system-ui"></div>
+<div class="app">
+<aside>
+<div class="brand"><span class="brand-mark">L</span><span>IELTS Learning OS<small>Write · Speak · Review</small></span></div>
+<nav>
+<div class="nav-label">Practice</div>
+<button data-page="dashboard" class="active">Today</button>
+<button data-page="practice">Daily Practice</button>
+<button data-page="speaking">Speaking Lab</button>
+<button data-page="topics">Writing Topics</button>
+<div class="nav-label">Memory</div>
+<button data-page="review">Review Queue</button>
+<button data-page="language">Language Bank</button>
+<button data-page="errors">Error Bank</button>
+<div class="nav-label">Studio</div>
+<button data-page="studio">Writing Studio</button>
+<button data-page="progress">Progress</button>
+<button data-page="data">Sync & Backup</button>
+</nav>
+</aside>
+<main>
+
+<section id="dashboard" class="page active">
+<div class="topbar">
+  <div><div class="eyebrow">IELTS LEARNING OS</div><h1>Today</h1><div class="subtitle">把今天最值得做的训练集中在一个页面里。</div></div>
+  <div class="topbar-actions"><span class="sync-badge" id="sync-badge">本机保存</span><button class="icon-btn" onclick="setPage('data')" aria-label="同步与备份">•••</button></div>
+</div>
+
+<div class="grid grid-4 home-metrics">
+  <div class="card metric target-card"><div class="metric-icon">8.5</div><div><div class="label">Target Band</div><div class="note">overall goal</div></div></div>
+  <div class="card metric"><div class="label">Daily Practice</div><div class="value" id="m-practice">0/10</div><div class="note" id="m-topic">–</div></div>
+  <div class="card metric"><div class="label">Language Bank</div><div class="value" id="m-language">0</div><div class="note">expressions collected</div></div>
+  <div class="card metric"><div class="label">Review Due</div><div class="value" id="m-review">0</div><div class="note">items to reactivate</div></div>
+</div>
+
+<div class="section-head"><div><div class="eyebrow">TODAY'S PLAN</div><h2>Keep the chain moving</h2></div></div>
+<div class="card today-focus" id="today-summary"></div>
+
+<div class="quick-grid">
+  <button class="quick-card" onclick="setPage('practice')"><span class="quick-icon">W</span><span><b>Sentence Practice</b><small>accuracy · collocation · precision</small></span><span class="arrow">→</span></button>
+  <button class="quick-card" onclick="setPage('speaking')"><span class="quick-icon">S</span><span><b>Speaking Lab</b><small>Part 1 · Part 2 · Part 3</small></span><span class="arrow">→</span></button>
+  <button class="quick-card" onclick="setPage('topics')"><span class="quick-icon">T</span><span><b>Topic Lab</b><small>ideas · vocabulary · examples</small></span><span class="arrow">→</span></button>
+  <button class="quick-card" onclick="setPage('review')"><span class="quick-icon">R</span><span><b>Review</b><small>reactivate weak language</small></span><span class="arrow">→</span></button>
+</div>
+
+<div class="section-head compact"><div><div class="eyebrow">INSIGHTS</div><h2>What needs attention</h2></div></div>
+<div class="grid grid-2">
+  <div class="card insight-card"><div class="card-title"><span>Error profile</span><span class="mini-label">ERROR BANK</span></div><div id="dash-errors"></div></div>
+  <div class="card insight-card"><div class="card-title"><span>Language mastery</span><span class="mini-label">LANGUAGE BANK</span></div><div id="dash-mastery"></div></div>
+</div>
+
+<details class="card library-card">
+  <summary><span><b>Learning Library</b><small>题库与语料规模</small></span><span class="chev">⌄</span></summary>
+  <div class="library-grid">
+    <div class="kpi">Writing Packs<b id="seed-topics">0</b></div>
+    <div class="kpi">Daily Sentences<b id="seed-sentences">0</b></div>
+    <div class="kpi">Language Bank<b id="seed-language">0</b></div>
+    <div class="kpi">Error Patterns<b id="seed-errors">0</b></div>
+    <div class="kpi">Writing Topics<b id="seed-topiclab">0</b></div>
+    <div class="kpi">Speaking Topics<b id="seed-speaking">0</b></div>
+  </div>
+</details>
+</section>
+
+<section id="practice" class="page">
+<div class="row"><div><h1>Daily Practice</h1><div class="subtitle" id="practice-head"></div></div>
+<div class="push row"><button class="btn goodbtn" id="complete-session">完成本组训练</button><button class="btn primary" id="new-set">再来一组</button><button class="btn secondary" id="copy-day">复制本组给 ChatGPT 批改</button></div></div>
+<div class="notice" style="margin-bottom:16px"><b>自动更新：</b>每天会自动换一组 10 句；“再来一组”会生成 <b>6 新题 + 2 真实错误迁移 + 2 Language Bank 复习</b>。作答自动保存。</div>
+<div id="practice-list"></div>
+<details class="card tool-card"><summary>导入 ChatGPT 批改结果 → 自动更新学习数据</summary>
+<div class="meaning" style="margin-top:10px">把 ChatGPT 回复中的 <b>IELTS_CORRECTION_PACK</b> 整段粘贴到这里。</div>
+<textarea id="correction-pack-input" placeholder="Paste IELTS_CORRECTION_PACK here…"></textarea>
+<div class="row"><button class="btn primary" id="import-correction-pack">导入并更新</button><button class="btn secondary" id="clear-correction-pack">清空</button><span id="correction-import-status" class="muted"></span></div>
+</details>
+</section>
+
+
+<section id="topics" class="page">
+<div class="row"><div><h1>Topic Lab</h1><div class="subtitle">每天一个不同 Task 2 主题：先解决“有话可说”，再解决“怎么说”。近期题目只按考生回忆风格整理，并非官方题库或预测。</div></div><div class="push row"><button class="btn secondary" id="topic-prev">上一个</button><button class="btn primary" id="topic-next">换一个话题</button></div></div>
+<div id="topic-daily"></div>
+<div class="section-title">All Topic Capsules</div><div class="row" style="margin-bottom:12px"><input id="topic-search" class="search" placeholder="搜索 AI / crime / housing / culture…"><select id="topic-filter" class="select"><option value="">全部话题</option></select></div><div id="topic-list" class="topic-list"></div>
+</section>
+
+<section id="speaking" class="page">
+<div class="row"><div><h1>Speaking Lab</h1><div class="subtitle">每天一套关联的 Part 1 → Part 2 → Part 3。近期回忆只作为练习素材，不视为官方题库；核心目标是积累真实个人素材、提高即兴展开能力。</div></div>
+<div class="push row"><button class="btn secondary" id="speak-prev">上一个</button><button class="btn primary" id="speak-next">换一个话题</button></div></div>
+<div id="speaking-daily"></div>
+<div class="section-title">Speaking Topic Bank</div>
+<div class="row" style="margin-bottom:12px"><input id="speaking-search" class="search" placeholder="搜索 people / technology / law / sleep…"><select id="speaking-filter" class="select"><option value="">全部话题</option></select></div>
+<div id="speaking-list" class="speaking-list"></div>
+</section>
+
+<section id="review" class="page">
+<h1>Review Queue</h1><div class="subtitle">从 Unstable / Learning 表达和真实错误中抽取，不按话题死背。<span id="review-diagnostic"></span></div>
+<div class="grid grid-2">
+<div class="card"><b>Expressions due</b><div id="review-language"></div></div>
+<div class="card"><b>Error patterns due</b><div id="review-errors"></div></div>
+</div>
+</section>
+
+<section id="language" class="page">
+<div class="row"><div><h1>Language Bank</h1><div class="subtitle">按功能、话题和掌握度管理“会输出”的语料。</div></div>
+<div class="push row"><input id="lang-search" class="search" placeholder="搜索表达 / 中文 / 话题…"><select id="lang-status" class="select"><option value="">全部状态</option><option>New</option><option>Learning</option><option>Unstable</option><option>Active</option><option>Mastered</option></select></div></div>
+<div class="card"><div id="language-list"></div></div>
+</section>
+
+<section id="errors" class="page">
+<h1>Error Bank</h1><div class="subtitle">只记录真实犯过的错误；同类错误可以累计次数和改变状态。</div>
+<div class="card"><table><thead><tr><th>Original</th><th>Correct</th><th>Category</th><th>Times</th><th>Status</th><th></th></tr></thead><tbody id="error-table"></tbody></table></div>
+</section>
+
+<section id="studio" class="page writing">
+<h1>Writing Studio</h1><div class="subtitle">完整 Task 2 先做草稿与语言统计；AI 评分以后接。</div>
+<div class="grid grid-2">
+<div class="card">
+<b>Essay draft</b><textarea id="essay" placeholder="Paste or write your IELTS Task 2 essay here…"></textarea>
+<div class="row" style="margin-top:10px"><button class="btn primary" id="save-essay">保存草稿</button><button class="btn secondary" id="copy-essay">复制给 ChatGPT 批改</button></div>
+</div>
+<div class="card">
+<b>Live language check</b>
+<div class="section-title" style="margin-top:14px">Basic statistics</div>
+<div class="grid grid-2"><div class="kpi">Words<br><b id="essay-words">0</b></div><div class="kpi">Sentences<br><b id="essay-sentences">0</b></div></div>
+<div class="section-title">Reuse watch</div><div id="reuse-watch" class="muted">开始写作后会检查常见重复连接词。</div>
+<div class="section-title">Pre-submit checklist</div>
+<div class="review-card">□ 我的立场在 introduction 中清楚可见</div>
+<div class="review-card">□ 每个 body paragraph 只有一个核心论证任务</div>
+<div class="review-card">□ 至少有一次让步 / 限定，而不是绝对化</div>
+<div class="review-card">□ 结尾没有新增论点</div>
+</div></div>
+</section>
+
+<section id="progress" class="page">
+<h1>Progress</h1><div class="subtitle">使用本机真实练习状态即时计算。</div>
+<div class="grid grid-2">
+<div class="card"><b>Error distribution</b><div id="prog-errors"></div></div>
+<div class="card"><b>Language mastery</b><div id="prog-mastery"></div></div>
+</div>
+<div class="section-title">Practice history</div><div class="card"><div id="history"></div></div>
+</section>
+
+<section id="data" class="page">
+<div class="eyebrow">SETTINGS</div><h1>Sync & Backup</h1><div class="subtitle">管理跨设备同步、主屏幕入口和学习记录备份。</div>
+
+<div class="settings-grid">
+  <div class="card setting-card">
+    <div class="setting-icon">↔</div><div class="setting-copy"><b>跨设备同步</b><div class="meaning">手机、平板和电脑使用同一个同步码后，共享同一份学习记录。</div></div>
+    <div class="setting-body">
+      <input id="sync-code" class="search" type="password" placeholder="输入个人同步码">
+      <div class="row"><button class="btn primary" id="save-sync-code">保存同步码</button><button class="btn secondary" id="sync-now">立即同步</button></div>
+      <div class="row"><span id="sync-status" class="muted"></span><span id="last-sync" class="sync-badge">尚未同步</span></div>
+    </div>
+  </div>
+
+  <div class="card setting-card install-setting">
+    <div class="setting-icon">⌂</div><div class="setting-copy"><b>添加到主屏幕</b><div class="meaning">在手机或平板上像打开 App 一样进入 IELTS Learning OS。</div></div>
+    <div class="setting-body"><button class="btn primary" id="install-app">添加到设备</button></div>
+  </div>
+</div>
+
+<div class="card backup-card">
+  <div class="card-title"><span>学习记录</span><span class="mini-label">BACKUP</span></div>
+  <div class="review-card"><b>当前数据</b><div class="meaning" id="data-status">Checking…</div></div>
+  <div class="review-card"><b>每日更新</b><div class="meaning">Daily Practice、Writing Topic Lab 和 Speaking Lab 会按日期轮换；个人素材、熟悉度、自评和 Language Bank 都会保存。</div></div>
+  <div class="review-card"><b>备份方式</b><div class="meaning">可以导出完整 JSON 记录，并在需要时重新导入。</div></div>
+  <div class="row action-row"><button class="btn secondary" id="export">导出全部数据</button><button class="btn secondary" id="import-btn">导入备份</button><input id="import-file" type="file" accept=".json" style="display:none"><button class="btn secondary" id="repair-data">修复内置数据</button><button class="btn danger" id="reset">恢复初始状态</button></div>
+</div>
+</section>
+</main>
+</div>
+<script>
+const SEED = {"topicPacks": [{"topic": "Education × Technology", "focus": "观点界定 · 让步 · 科技利弊", "items": [{"function": "开头引入", "cn": "关于学校是否应该更加重视实用技能而非传统学科的争论，本质上反映了人们对于教育目的的不同理解。", "model": "The debate over whether schools should place greater emphasis on practical skills or traditional academic subjects essentially reflects differing views on the purpose of education."}, {"function": "核心观点", "cn": "教育的价值不应该仅仅以学生毕业后能否迅速找到工作来衡量。", "model": "The value of education should not be measured solely by how quickly graduates are able to find employment."}, {"function": "提出方案", "cn": "与其让学生记住大量很快就会被遗忘的信息，学校更应该培养他们独立分析问题的能力。", "model": "Rather than requiring students to memorise large amounts of information, schools should focus on developing their ability to think critically and analyse problems independently."}, {"function": "让步论证", "cn": "诚然，考试可以为评估学生的学习成果提供一个相对客观的标准，但过度依赖考试成绩可能会鼓励机械记忆。", "model": "Admittedly, examinations provide a relatively objective means of assessing academic performance, but excessive reliance on test scores may encourage rote memorisation."}, {"function": "因果论证", "cn": "当学生能够根据自己的兴趣选择部分课程时，他们往往更愿意主动参与学习，并对自己的决定负责。", "model": "When students are allowed to choose some courses according to their interests, they are more likely to participate actively in their studies and take responsibility for their own decisions."}, {"function": "科技观点", "cn": "技术本身并不会自动改善教育质量；真正重要的是教师和学生如何使用这些工具。", "model": "Technology itself does not automatically improve the quality of education; what matters more is how teachers and students use these tools."}, {"function": "双边分析", "cn": "虽然人工智能可以帮助学生更高效地获取信息，但它也可能削弱他们独立思考和解决问题的意愿。", "model": "Although artificial intelligence can help students access information more efficiently, it may also undermine their willingness to think independently and solve problems on their own."}, {"function": "政策观点", "cn": "与其完全禁止学生使用人工智能，学校更合理的做法是教会他们如何以负责任的方式使用这项技术。", "model": "Rather than banning the use of artificial intelligence altogether, schools should teach students how to use it responsibly."}, {"function": "段落收束", "cn": "因此，问题的关键并不是学校是否应该采用新技术，而是如何确保技术能够服务于学习，而不是取代学习本身。", "model": "Therefore, the key issue is not whether schools should adopt new technologies, but how to ensure that technology supports rather than replaces learning."}, {"function": "结尾句", "cn": "总的来说，一个有效的教育体系既要帮助年轻人为就业做好准备，也不能忽视培养他们作为独立个体所需要的知识和判断力。", "model": "Overall, an effective education system should not only prepare young people for employment but also equip them with the knowledge and judgement needed to become independent individuals."}]}, {"topic": "Environment × Government", "focus": "政策责任 · 成本权衡 · 长期影响", "items": [{"function": "开头引入", "cn": "围绕经济增长与环境保护孰先孰后的争论，实际上涉及社会应该如何分配眼前利益与长期成本。", "model": "The debate over whether economic growth should take priority over environmental protection ultimately concerns how societies balance immediate benefits against long-term costs."}, {"function": "核心观点", "cn": "环境政策的有效性不应该仅以短期经济成本来衡量。", "model": "The effectiveness of environmental policy should not be measured solely by its short-term economic cost."}, {"function": "提出方案", "cn": "与其单纯依靠罚款改变公众行为，政府更应该让可持续的选择变得更方便、更负担得起。", "model": "Rather than relying solely on fines to change public behaviour, governments should make sustainable alternatives more convenient and affordable."}, {"function": "让步论证", "cn": "诚然，更严格的环保规定可能增加企业的运营成本，但这些成本需要与污染造成的长期社会损失一并考虑。", "model": "Admittedly, stricter environmental regulations may increase operating costs for businesses, but these costs must be weighed against the long-term social damage caused by pollution."}, {"function": "因果论证", "cn": "当公共交通足够可靠且价格合理时，人们更有可能减少对私家车的依赖。", "model": "When public transport is reliable and reasonably priced, people are more likely to reduce their dependence on private cars."}, {"function": "分析句", "cn": "增加政府支出并不会自动带来更好的环境结果；资金如何分配同样重要。", "model": "Higher government spending does not automatically lead to better environmental outcomes; how the money is allocated matters just as much."}, {"function": "双边分析", "cn": "虽然可再生能源能够降低长期排放，但大规模转型也可能在短期内给低收入家庭带来额外负担。", "model": "Although renewable energy can reduce emissions in the long term, a large-scale transition may also impose additional short-term costs on low-income households."}, {"function": "政策观点", "cn": "与其完全禁止高污染产品，更合理的做法是逐步提高标准，同时为消费者提供现实可行的替代选择。", "model": "Rather than banning highly polluting products outright, a more sensible approach is to raise standards gradually while providing consumers with viable alternatives."}, {"function": "段落收束", "cn": "真正的问题并不是政府是否应该干预，而是如何在环境目标与社会公平之间取得平衡。", "model": "The real issue is not whether governments should intervene, but how they can balance environmental goals with social fairness."}, {"function": "结尾句", "cn": "有效的环境政策不仅要减少排放，也应该避免让转型成本过度集中在最脆弱的群体身上。", "model": "Effective environmental policy should not only reduce emissions but also prevent the costs of transition from falling disproportionately on the most vulnerable groups."}]}, {"topic": "Crime × Society", "focus": "根本原因 · 惩罚与预防 · 社会责任", "items": [{"function": "开头引入", "cn": "关于是否应通过更严厉的刑罚来减少犯罪的争论，反映了人们对惩罚与预防何者更有效的不同看法。", "model": "The debate over whether harsher punishment is the best way to reduce crime reflects differing views on the relative value of punishment and prevention."}, {"function": "核心观点", "cn": "一个刑事司法体系的成效不应该仅以监禁人数来衡量。", "model": "The effectiveness of a criminal justice system should not be measured solely by the number of people it imprisons."}, {"function": "提出方案", "cn": "与其单纯提高处罚力度，政府更应该解决犯罪背后的社会原因。", "model": "Rather than simply increasing the severity of punishment, governments should address the underlying social causes of crime."}, {"function": "让步论证", "cn": "诚然，监禁对于保护社会免受危险罪犯侵害是必要的，但过度依赖监禁并不能解决所有类型的犯罪。", "model": "Admittedly, imprisonment is necessary to protect society from dangerous offenders, but excessive reliance on incarceration cannot address every form of crime."}, {"function": "因果论证", "cn": "当年轻人能够获得稳定教育和就业机会时，他们卷入犯罪活动的可能性往往会降低。", "model": "When young people have access to stable education and employment opportunities, they are generally less likely to become involved in criminal activity."}, {"function": "分析句", "cn": "更长的刑期并不会自动带来更低的犯罪率。", "model": "Longer prison sentences do not automatically lead to lower crime rates."}, {"function": "双边分析", "cn": "虽然监控技术可以帮助警方侦破犯罪，但它也可能引发对隐私和权力滥用的担忧。", "model": "Although surveillance technology can help the police solve crimes, it may also raise concerns about privacy and the misuse of power."}, {"function": "政策观点", "cn": "与其把所有青少年违法者都送进监狱，更合理的做法是根据犯罪严重程度采用教育和康复措施。", "model": "Rather than sending all young offenders to prison, a more sensible approach is to use education and rehabilitation where the seriousness of the offence allows."}, {"function": "段落收束", "cn": "关键问题并不是社会应不应该惩罚犯罪，而是哪种惩罚最有可能降低再次犯罪的风险。", "model": "The key issue is not whether society should punish crime, but which forms of punishment are most likely to reduce the risk of reoffending."}, {"function": "结尾句", "cn": "有效的犯罪政策既需要保护公众安全，也应该尽可能减少导致犯罪反复发生的社会条件。", "model": "Effective crime policy should not only protect public safety but also reduce the social conditions that allow offending to recur."}]}, {"topic": "Work × Economy", "focus": "效率 · 工作满意度 · 自动化", "items": [{"function": "开头引入", "cn": "关于远程办公是否应该成为常态的争论，本质上涉及效率、灵活性与团队协作之间的权衡。", "model": "The debate over whether remote work should become the norm essentially concerns the trade-off between efficiency, flexibility and collaboration."}, {"function": "核心观点", "cn": "员工的生产力不应该仅以他们在办公室待了多长时间来衡量。", "model": "Employee productivity should not be measured solely by the amount of time people spend in the office."}, {"function": "提出方案", "cn": "与其通过延长工作时间提高产出，企业更应该改善工作流程并减少不必要的任务。", "model": "Rather than increasing output through longer working hours, companies should improve workflows and eliminate unnecessary tasks."}, {"function": "让步论证", "cn": "诚然，远程办公可以提高灵活性，但它也可能削弱非正式交流和团队凝聚力。", "model": "Admittedly, remote work can increase flexibility, but it may also weaken informal communication and team cohesion."}, {"function": "因果论证", "cn": "当员工在工作方式上拥有更大的自主权时，他们往往更愿意对结果负责。", "model": "When employees are given greater autonomy over how they work, they are often more willing to take responsibility for the results."}, {"function": "分析句", "cn": "更高的工资并不会自动带来更高的工作满意度。", "model": "Higher salaries do not automatically lead to greater job satisfaction."}, {"function": "双边分析", "cn": "虽然自动化可以提高效率并减少重复劳动，但它也可能使部分劳动者面临技能过时的风险。", "model": "Although automation can improve efficiency and reduce repetitive work, it may also leave some workers vulnerable to skills becoming obsolete."}, {"function": "政策观点", "cn": "与其试图阻止自动化，政府和企业更应该帮助劳动者获得能够适应新岗位的技能。", "model": "Rather than trying to prevent automation, governments and employers should help workers acquire the skills needed to adapt to new roles."}, {"function": "段落收束", "cn": "真正的问题不是技术会不会改变就业，而是劳动力能否足够快地适应这种变化。", "model": "The real question is not whether technology will transform employment, but whether the workforce can adapt quickly enough."}, {"function": "结尾句", "cn": "健康的劳动力市场不仅要创造就业机会，也应该让劳动者具备应对经济变化的能力。", "model": "A healthy labour market should not only create employment opportunities but also equip workers to respond to economic change."}]}, {"topic": "Media × Culture", "focus": "信息质量 · 文化传播 · 监管", "items": [{"function": "开头引入", "cn": "关于社交媒体究竟促进还是削弱公共讨论的争论，反映了人们对信息自由与信息质量的不同重视。", "model": "The debate over whether social media strengthens or weakens public debate reflects differing priorities concerning freedom of information and information quality."}, {"function": "核心观点", "cn": "媒体平台的价值不应该仅以用户数量或停留时间来衡量。", "model": "The value of a media platform should not be measured solely by the size of its audience or the amount of time users spend on it."}, {"function": "提出方案", "cn": "与其简单删除争议内容，平台更应该提高信息来源的透明度，并减少明显的虚假传播。", "model": "Rather than simply removing controversial content, platforms should improve transparency about information sources and limit clearly deceptive material."}, {"function": "让步论证", "cn": "诚然，社交媒体降低了公共表达的门槛，但更低的门槛也意味着未经核实的信息可以迅速传播。", "model": "Admittedly, social media has lowered the barriers to public expression, but this also allows unverified information to spread rapidly."}, {"function": "因果论证", "cn": "当用户能够清楚知道信息来自哪里时，他们更有可能对内容的可信度作出判断。", "model": "When users can clearly identify where information comes from, they are more likely to judge its credibility critically."}, {"function": "分析句", "cn": "接触更多信息并不会自动带来更好的公共判断。", "model": "Greater access to information does not automatically lead to better public judgement."}, {"function": "双边分析", "cn": "虽然全球媒体让人们接触到更多文化作品，但它也可能使本土文化产品面临更激烈的竞争。", "model": "Although global media exposes people to a wider range of cultural works, it may also place local cultural production under greater competitive pressure."}, {"function": "政策观点", "cn": "与其全面限制年轻人使用社交媒体，学校更应该教授数字素养和信息核查能力。", "model": "Rather than broadly restricting young people's use of social media, schools should teach digital literacy and source evaluation."}, {"function": "段落收束", "cn": "关键问题不是社会是否需要信息自由，而是如何在开放传播与基本的信息可靠性之间建立规则。", "model": "The key issue is not whether societies need freedom of information, but how they can preserve openness while maintaining basic standards of reliability."}, {"function": "结尾句", "cn": "健康的媒体环境不仅要保护表达自由，也应该帮助公众区分事实、观点和误导性信息。", "model": "A healthy media environment should not only protect freedom of expression but also help the public distinguish facts, opinions and misleading claims."}]}, {"topic": "Health × Cities", "focus": "公共健康 · 城市设计 · 个体责任", "items": [{"function": "开头引入", "cn": "关于健康究竟主要是个人责任还是公共政策问题的争论，反映了人们对自由选择与社会环境作用的不同理解。", "model": "The debate over whether health is primarily a matter of individual responsibility or public policy reflects differing views on personal choice and the influence of social environments."}, {"function": "核心观点", "cn": "一个社会的健康水平不应该仅以医院数量来衡量。", "model": "A society's level of health should not be measured solely by the number of hospitals it has."}, {"function": "提出方案", "cn": "与其只在疾病发生后增加治疗支出，政府更应该投资预防和健康的生活环境。", "model": "Rather than increasing spending only after illness occurs, governments should invest in prevention and healthier living environments."}, {"function": "让步论证", "cn": "诚然，个人应当为自己的生活方式承担一定责任，但健康选择往往也受到收入、时间和城市环境的限制。", "model": "Admittedly, individuals should take some responsibility for their lifestyles, but healthy choices are often constrained by income, time and the urban environment."}, {"function": "因果论证", "cn": "当社区拥有安全的人行道、公园和公共运动空间时，居民更有可能保持日常活动。", "model": "When neighbourhoods provide safe pavements, parks and public spaces for exercise, residents are more likely to remain physically active."}, {"function": "分析句", "cn": "增加医疗支出并不会自动带来更健康的人口。", "model": "Higher healthcare spending does not automatically produce a healthier population."}, {"function": "双边分析", "cn": "虽然高密度城市可以提高公共服务效率，但糟糕的规划也可能加剧噪音、污染和心理压力。", "model": "Although dense cities can make public services more efficient, poor planning may also intensify noise, pollution and psychological stress."}, {"function": "政策观点", "cn": "与其通过宣传单纯要求人们改变习惯，政策制定者更应该让健康的选择成为更容易的选择。", "model": "Rather than relying on campaigns that simply tell people to change their habits, policymakers should make healthy choices easier to make."}, {"function": "段落收束", "cn": "真正的问题不是个人责任是否重要，而是公共环境在多大程度上帮助或阻碍人们作出健康选择。", "model": "The real question is not whether personal responsibility matters, but to what extent public environments enable or constrain healthy choices."}, {"function": "结尾句", "cn": "有效的公共健康政策既需要个人参与，也需要能够支持健康生活方式的社会基础设施。", "model": "Effective public health policy requires not only individual participation but also social infrastructure that supports healthy lifestyles."}]}, {"topic": "Transport × Cities", "focus": "公共投资 · 拥堵 · 可达性", "items": [{"function": "开头引入", "cn": "关于城市是否应该限制私家车使用的争论，本质上涉及个人便利与公共空间效率之间的冲突。", "model": "The debate over whether cities should restrict private car use essentially concerns the conflict between individual convenience and the efficient use of public space."}, {"function": "核心观点", "cn": "交通系统的成功不应该仅以道路建设规模来衡量。", "model": "The success of a transport system should not be measured solely by the amount of road infrastructure a city builds."}, {"function": "提出方案", "cn": "与其不断扩建道路，城市更应该提高公共交通的可靠性和覆盖范围。", "model": "Rather than continually expanding roads, cities should improve the reliability and coverage of public transport."}, {"function": "让步论证", "cn": "诚然，私家车为部分人提供了难以替代的便利，但无限制依赖汽车会加剧拥堵并占用大量城市空间。", "model": "Admittedly, private cars provide irreplaceable convenience for some people, but unrestricted dependence on them increases congestion and consumes large amounts of urban space."}, {"function": "因果论证", "cn": "当公共交通能够覆盖通勤的第一公里和最后一公里时，人们更愿意减少开车频率。", "model": "When public transport effectively covers the first and last stages of a commute, people are more willing to reduce how often they drive."}, {"function": "分析句", "cn": "修建更多道路并不会自动解决拥堵问题。", "model": "Building more roads does not automatically solve congestion."}, {"function": "双边分析", "cn": "虽然拥堵收费可以减少高峰期车流，但如果替代交通不足，它也可能对低收入通勤者造成不公平影响。", "model": "Although congestion charging can reduce peak-hour traffic, it may also affect low-income commuters unfairly if adequate alternatives are unavailable."}, {"function": "政策观点", "cn": "与其简单禁止汽车进入市中心，更合理的做法是同步改善公共交通并逐步调整停车和道路收费。", "model": "Rather than simply banning cars from city centres, a more sensible approach is to improve public transport while gradually reforming parking and road pricing."}, {"function": "段落收束", "cn": "关键问题并不是城市是否需要限制汽车，而是能否先提供足够可行的替代方案。", "model": "The key issue is not whether cities should restrict car use, but whether they can first provide sufficiently viable alternatives."}, {"function": "结尾句", "cn": "一个有效的交通体系不仅要提高通勤效率，也应该保证不同收入群体都能够方便地到达工作和公共服务。", "model": "An effective transport system should not only improve commuting efficiency but also ensure that people across income groups can access jobs and public services."}]}, {"topic": "Globalisation × Culture", "focus": "经济机会 · 文化同质化 · 平衡", "items": [{"function": "开头引入", "cn": "全球化究竟丰富还是削弱文化多样性的争论，反映了开放交流与地方独特性之间的张力。", "model": "The debate over whether globalisation enriches or weakens cultural diversity reflects the tension between open exchange and local distinctiveness."}, {"function": "核心观点", "cn": "全球化的影响不应该仅以国际贸易增长来衡量。", "model": "The impact of globalisation should not be measured solely by growth in international trade."}, {"function": "提出方案", "cn": "与其试图把本土文化与外部影响隔绝开来，社会更应该提高本土文化生产的活力和可见度。", "model": "Rather than trying to isolate local culture from external influences, societies should strengthen the vitality and visibility of local cultural production."}, {"function": "让步论证", "cn": "诚然，全球市场可以为企业和消费者提供更多选择，但收益并不会自动平均分配。", "model": "Admittedly, global markets can provide businesses and consumers with greater choice, but the benefits are not automatically distributed evenly."}, {"function": "因果论证", "cn": "当本土创作者能够获得资金、平台和观众时，文化传统更有可能以新的形式延续。", "model": "When local creators have access to funding, platforms and audiences, cultural traditions are more likely to survive in new forms."}, {"function": "分析句", "cn": "更多国际接触并不会自动导致本土文化消失。", "model": "Greater international exposure does not automatically lead to the disappearance of local culture."}, {"function": "双边分析", "cn": "虽然全球化能够扩大就业和消费机会，但它也可能扩大地区之间以及劳动者之间的不平等。", "model": "Although globalisation can expand employment and consumer opportunities, it may also widen inequalities between regions and workers."}, {"function": "政策观点", "cn": "与其通过全面保护主义阻止全球竞争，政府更应该帮助脆弱行业提高生产力并完成转型。", "model": "Rather than trying to block global competition through broad protectionism, governments should help vulnerable industries improve productivity and adapt."}, {"function": "段落收束", "cn": "真正的问题并不是社会是否应该保持开放，而是如何确保开放带来的收益不会以牺牲社会韧性为代价。", "model": "The real question is not whether societies should remain open, but how they can ensure that openness does not come at the expense of social resilience."}, {"function": "结尾句", "cn": "成功的全球化政策不仅要扩大经济机会，也应该保护社会适应变化所需的制度和文化资源。", "model": "Successful globalisation policy should not only expand economic opportunities but also preserve the institutional and cultural resources societies need to adapt to change."}]}, {"topic": "Children × Parenting", "focus": "规则 · 自主性 · 成长", "items": [{"function": "开头引入", "cn": "关于父母应该给予孩子多少自由的争论，本质上涉及保护、纪律与自主成长之间的平衡。", "model": "The debate over how much freedom parents should give children essentially concerns the balance between protection, discipline and independent development."}, {"function": "核心观点", "cn": "良好教育孩子的成效不应该仅以他们是否服从规则来衡量。", "model": "The success of parenting should not be measured solely by whether children obey rules."}, {"function": "提出方案", "cn": "与其替孩子作出所有重要决定，父母更应该逐步让他们学习承担选择的后果。", "model": "Rather than making every important decision for children, parents should gradually allow them to experience the consequences of their own choices."}, {"function": "让步论证", "cn": "诚然，明确规则可以为儿童提供安全感，但过度控制可能妨碍他们形成独立判断。", "model": "Admittedly, clear rules can provide children with a sense of security, but excessive control may prevent them from developing independent judgement."}, {"function": "因果论证", "cn": "当孩子被允许在适当范围内作决定时，他们更有可能形成责任感。", "model": "When children are allowed to make decisions within appropriate limits, they are more likely to develop a sense of responsibility."}, {"function": "分析句", "cn": "严格的纪律并不会自动培养出更负责任的成年人。", "model": "Strict discipline does not automatically produce more responsible adults."}, {"function": "双边分析", "cn": "虽然数字设备可以提供教育资源和社交机会，但不受限制的使用也可能影响注意力和睡眠。", "model": "Although digital devices can provide educational resources and social opportunities, unrestricted use may also affect attention and sleep."}, {"function": "政策观点", "cn": "与其完全禁止儿童使用屏幕，家长更合理的做法是建立明确的时间和内容规则。", "model": "Rather than banning children's screen use altogether, parents should establish clear limits on time and content."}, {"function": "段落收束", "cn": "关键问题不是孩子应不应该拥有自由，而是哪种程度的自由与他们的年龄和成熟度相匹配。", "model": "The key issue is not whether children should have freedom, but what degree of freedom is appropriate for their age and maturity."}, {"function": "结尾句", "cn": "有效的养育不仅要为孩子提供保护，也应该逐步培养他们独立判断和承担责任的能力。", "model": "Effective parenting should not only protect children but also gradually develop their ability to make independent judgements and take responsibility."}]}, {"topic": "Public Spending × Arts", "focus": "公共价值 · 机会成本 · 文化投资", "items": [{"function": "开头引入", "cn": "关于政府是否应该资助艺术的争论，反映了人们对公共支出的直接效用与长期文化价值的不同理解。", "model": "The debate over whether governments should fund the arts reflects differing views on the immediate utility and long-term cultural value of public spending."}, {"function": "核心观点", "cn": "公共艺术支出的价值不应该仅以门票收入或直接经济回报来衡量。", "model": "The value of public spending on the arts should not be measured solely by ticket revenue or direct financial returns."}, {"function": "提出方案", "cn": "与其把艺术资助视为与公共服务竞争的奢侈支出，政府更应该评估不同项目能够产生的社会和教育价值。", "model": "Rather than treating arts funding as a luxury that competes with public services, governments should assess the social and educational value different programmes can generate."}, {"function": "让步论证", "cn": "诚然，在医疗和教育资源不足时，艺术支出很难成为最高优先事项，但这并不意味着文化投资毫无公共价值。", "model": "Admittedly, arts spending is difficult to justify as the highest priority when healthcare and education are underfunded, but this does not mean cultural investment has no public value."}, {"function": "因果论证", "cn": "当文化设施价格合理且分布广泛时，艺术参与就不再只是高收入群体的特权。", "model": "When cultural facilities are affordable and widely available, participation in the arts is less likely to remain a privilege of higher-income groups."}, {"function": "分析句", "cn": "削减艺术预算并不会自动把同等数量的资源转化为更有效的公共服务。", "model": "Cutting arts budgets does not automatically translate the same amount of resources into more effective public services."}, {"function": "双边分析", "cn": "虽然大型文化项目可以提升城市形象并吸引游客，但如果忽视本地社区，其公共收益可能十分有限。", "model": "Although major cultural projects can improve a city's image and attract visitors, their public benefits may be limited if local communities are neglected."}, {"function": "政策观点", "cn": "与其全面取消艺术资助，更合理的做法是优先支持具有明确公共教育和社区价值的项目。", "model": "Rather than eliminating arts funding altogether, a more sensible approach is to prioritise programmes with clear educational and community value."}, {"function": "段落收束", "cn": "真正的问题不是艺术值不值得公共资金，而是哪些文化项目能够产生足够广泛的公共收益。", "model": "The real question is not whether the arts deserve public funding, but which cultural programmes generate sufficiently broad public benefits."}, {"function": "结尾句", "cn": "合理的公共预算不仅要满足基本服务，也可以为社会保留教育、文化和共同记忆所需要的空间。", "model": "A well-designed public budget should not only meet essential service needs but also preserve space for education, culture and collective memory."}]}], "language": [{"expression": "place greater emphasis on", "meaning": "更加重视……", "type": "Collocation", "topic": "Education", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "prioritise A over B", "meaning": "优先考虑 A 而非 B", "type": "Collocation", "topic": "General", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "differing views on", "meaning": "对于……的不同观点", "type": "Collocation", "topic": "General", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "be measured solely by", "meaning": "仅仅以……来衡量", "type": "Collocation", "topic": "Analysis", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "rote memorisation", "meaning": "机械记忆", "type": "Collocation", "topic": "Education", "status": "Unstable", "reviewCount": 0, "correctStreak": 0}, {"expression": "develop students' ability to", "meaning": "培养学生做……的能力", "type": "Collocation", "topic": "Education", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "foster critical thinking", "meaning": "培养批判性思维", "type": "Collocation", "topic": "Education", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "assess academic performance", "meaning": "评估学业表现", "type": "Collocation", "topic": "Education", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "place excessive emphasis on", "meaning": "过度强调……", "type": "Collocation", "topic": "General", "status": "Unstable", "reviewCount": 0, "correctStreak": 0}, {"expression": "participate actively in", "meaning": "积极参与……", "type": "Collocation", "topic": "General", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "take responsibility for", "meaning": "为……负责", "type": "Collocation", "topic": "General", "status": "Unstable", "reviewCount": 0, "correctStreak": 0}, {"expression": "access information efficiently", "meaning": "高效获取信息", "type": "Collocation", "topic": "Technology", "status": "Unstable", "reviewCount": 0, "correctStreak": 0}, {"expression": "undermine someone's willingness to", "meaning": "削弱某人做……的意愿", "type": "Collocation", "topic": "Technology", "status": "Unstable", "reviewCount": 0, "correctStreak": 0}, {"expression": "a sensible approach", "meaning": "合理、明智的做法", "type": "Collocation", "topic": "General", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "serve as a tool for", "meaning": "作为……的工具", "type": "Collocation", "topic": "Technology", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "support rather than replace", "meaning": "支持而非取代", "type": "Collocation", "topic": "Technology", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "prepare young people for the workplace", "meaning": "帮助年轻人为职场做准备", "type": "Collocation", "topic": "Education", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "equip someone with the knowledge and skills needed to...", "meaning": "使某人具备做……所需的知识和技能", "type": "Collocation", "topic": "General", "status": "Learning", "reviewCount": 0, "correctStreak": 0}, {"expression": "The debate over whether A or B essentially reflects differing views on C.", "meaning": "以争议引出深层分歧", "type": "Structure", "topic": "Introduction", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "X should not be measured solely by Y.", "meaning": "反对单一评价标准", "type": "Structure", "topic": "Analysis", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "Rather than doing A, X should focus on doing B.", "meaning": "提出更优先的方案", "type": "Structure", "topic": "Recommendation", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "Admittedly, A, but B.", "meaning": "让步 + 反驳", "type": "Structure", "topic": "Concession", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "When people are given A, they are more likely to B and C.", "meaning": "条件 → 行为结果", "type": "Structure", "topic": "Causation", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "X does not automatically lead to Y.", "meaning": "避免简单因果和绝对化", "type": "Structure", "topic": "Analysis", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "Although A can B, it may also C.", "meaning": "收益 + 潜在代价", "type": "Structure", "topic": "Concession", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "Rather than banning A altogether, X should B.", "meaning": "禁令 vs 管理", "type": "Structure", "topic": "Recommendation", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "The key issue is not whether A, but how B.", "meaning": "重新界定问题", "type": "Structure", "topic": "Analysis", "status": "New", "reviewCount": 0, "correctStreak": 0}, {"expression": "X should not only A but also B.", "meaning": "双重目标 / 结尾", "type": "Structure", "topic": "Conclusion", "status": "New", "reviewCount": 0, "correctStreak": 0}], "errors": [{"original": "acknowledge practical skills", "correct": "place greater emphasis on practical skills", "category": "Collocation", "note": "acknowledge 不表示“重视”", "status": "Active", "occurrences": 1}, {"original": "estimate the value of education", "correct": "measure the value of education", "category": "Word choice", "note": "estimate 多用于数量、价格、时间等估算", "status": "Active", "occurrences": 1}, {"original": "recite a large amount of information compulsorily", "correct": "memorise large amounts of information", "category": "Collocation", "note": "recite 更常用于诗歌、台词等背诵", "status": "Active", "occurrences": 1}, {"original": "cultivate students to think", "correct": "develop students' ability to think / encourage students to think", "category": "Grammar + Collocation", "note": "cultivate 不使用 somebody to do 的结构", "status": "Active", "occurrences": 1}, {"original": "mechanical memories", "correct": "rote memorisation", "category": "Collocation", "note": "教育语境常用固定搭配", "status": "Active", "occurrences": 1}, {"original": "academic performance overly", "correct": "rely excessively on academic performance / place excessive emphasis on test scores", "category": "Collocation", "note": "overly 不能这样修饰名词短语", "status": "Active", "occurrences": 1}, {"original": "take an active part in", "correct": "take an active part in classroom activities / participate actively in learning", "category": "Grammar", "note": "in 后面需要宾语", "status": "Active", "occurrences": 1}, {"original": "responsible for themselves", "correct": "take responsibility for their own decisions", "category": "Meaning", "note": "原意是“对自己的决定负责”", "status": "Active", "occurrences": 1}, {"original": "access to information (as a verb)", "correct": "access information / have access to information", "category": "Grammar", "note": "access 作动词时直接接宾语", "status": "Active", "occurrences": 1}, {"original": "may undermines", "correct": "may undermine", "category": "Grammar", "note": "情态动词后用动词原形", "status": "Active", "occurrences": 1}, {"original": "plausible policy/approach", "correct": "a sensible / reasonable approach", "category": "Word choice", "note": "plausible 表示“看似可信”，不是“明智合理”", "status": "Active", "occurrences": 1}, {"original": "ensure technologies as tools", "correct": "ensure that technology serves as a tool for learning", "category": "Grammar + Collocation", "note": "ensure 后接 that 从句更自然", "status": "Active", "occurrences": 1}, {"original": "take place of study", "correct": "take the place of learning / replace learning", "category": "Collocation", "note": "固定搭配是 take the place of", "status": "Active", "occurrences": 1}, {"original": "employment of the youth", "correct": "prepare young people for employment / the workplace", "category": "Collocation", "note": "避免中文式名词堆叠", "status": "Active", "occurrences": 1}, {"original": "develop enough knowledge", "correct": "equip students with knowledge / acquire knowledge", "category": "Collocation", "note": "教育系统通常 equip；学生 acquire", "status": "Active", "occurrences": 1}, {"original": "correct values", "correct": "sound judgement / a strong sense of responsibility", "category": "Precision", "note": "correct values 过于绝对且偏直译", "status": "Active", "occurrences": 1}]};
+const TOPIC_LAB = [{"title": "Mathematics vs Communication Skills", "category": "Education", "type": "Discuss both views + opinion", "signal": "2026 recent-report style", "prompt": "Schools should prioritise mathematical ability or communication skills. Discuss both views and give your opinion.", "issue": "可量化学术能力 vs 可迁移的人际表达能力；重点写二者在升学、就业和协作中的不同功能。", "ideas": ["数学训练培养 quantitative reasoning、逻辑和数据理解。", "沟通能力影响协作、领导、解释和说服。", "只重考试技能可能造成 knowledge–application gap。", "最稳立场是保证 numeracy 基础，同时系统训练沟通。"], "examples": ["工程团队既要读懂数据，也要向非技术人员解释风险。", "小组项目中，知识解决问题，沟通决定方案能否执行。"], "vocab": [["quantitative reasoning", "定量推理"], ["numeracy skills", "数理能力"], ["articulate ideas clearly", "清楚表达观点"], ["interpersonal competence", "人际能力"], ["transferable skills", "可迁移技能"], ["collaborative problem-solving", "协作解决问题"], ["academic foundation", "学术基础"], ["workplace readiness", "职场准备度"]]}, {"title": "Economic Growth vs Nature", "category": "Environment", "type": "Discuss both views + opinion", "signal": "2026 recent-report style", "prompt": "Economic development should remain the main national priority, or environmental protection should come first. Discuss both views.", "issue": "短期增长、就业和税收 vs 长期外部成本、生态风险和代际公平。", "ideas": ["增长扩大就业与税基，为公共服务和绿色转型提供资源。", "发展中国家可能需要工业化来减贫。", "污染和生态退化会把成本转嫁给医疗、农业和未来财政。", "高分立场不是停止增长，而是把环境成本计入增长。"], "examples": ["公共交通和清洁能源既创造就业，也减少空气污染。", "湿地开发有短期收益，但失去防洪功能会增加长期灾害成本。"], "vocab": [["economic output", "经济产出"], ["environmental degradation", "环境退化"], ["external costs", "外部成本"], ["natural capital", "自然资本"], ["sustainable growth", "可持续增长"], ["regulatory standards", "监管标准"], ["clean-energy transition", "清洁能源转型"], ["intergenerational equity", "代际公平"]]}, {"title": "Everyday Stress", "category": "Health & Society", "type": "Causes + solutions", "signal": "2026 recent-report style", "prompt": "People experience increasing levels of stress in everyday life. What causes this and how can it be reduced?", "issue": "从工作结构、住房成本、数字连接、时间贫困和社会支持写，不要只写 busy work。", "ideas": ["always-on culture 模糊工作与私人生活边界。", "住房、教育和照护成本制造长期 financial insecurity。", "社交媒体比较和持续连接放大焦虑。", "解决方案应同时覆盖 employer、government 和 individual。"], "examples": ["下班后持续收到工作消息会侵蚀真正休息时间。", "长通勤同时减少可支配时间并提高疲劳。"], "vocab": [["chronic stress", "长期压力"], ["financial insecurity", "经济不安全感"], ["time poverty", "时间贫困"], ["work-life boundaries", "工作生活边界"], ["psychological well-being", "心理福祉"], ["social comparison", "社会比较"], ["support network", "支持网络"], ["manageable workload", "可承受工作量"]]}, {"title": "English as a Medium of Instruction", "category": "Education & Globalisation", "type": "Advantages / disadvantages", "signal": "2026 recent-report style", "prompt": "English is increasingly used as the main language of education. What are the advantages and disadvantages?", "issue": "全球流动和学术资源 vs 语言障碍、教育公平和母语 literacy。", "ideas": ["英语作为 academic lingua franca 扩大学术和就业资源。", "共同教学语言降低跨国教育沟通成本。", "英语不足会给内容学习增加 cognitive load。", "资源更好的家庭更容易获得英语支持，可能扩大差距。"], "examples": ["学生懂科学概念，却可能因学术英语不足在考试中表现失真。", "大学英语授课可吸引国际资源，但需额外语言支持。"], "vocab": [["medium of instruction", "教学媒介语"], ["academic literacy", "学术读写能力"], ["linguistic barrier", "语言障碍"], ["bilingual education", "双语教育"], ["equal access", "平等机会"], ["cognitive load", "认知负荷"], ["cultural identity", "文化身份"], ["international mobility", "国际流动性"]]}, {"title": "Watching Films Alone or With Others", "category": "Media & Culture", "type": "Discuss both views + opinion", "signal": "2026 recent-report style", "prompt": "Films can be enjoyed alone or with other people. Discuss both views and give your opinion.", "issue": "viewer autonomy、沉浸、social bonding、interpretation 和 cinema culture。", "ideas": ["独自观看更自主、无干扰，适合复杂文本。", "共同观影创造 shared cultural experience。", "讨论能让观众接触不同解读。", "最自然的立场是观看场景应服务于不同目的。"], "examples": ["艺术电影独看便于思考，喜剧和商业大片往往因群体反应更有感染力。", "影展映后讨论能把被动观看变成公共文化交流。"], "vocab": [["shared cultural experience", "共同文化体验"], ["viewer autonomy", "观众自主性"], ["immersive viewing", "沉浸式观看"], ["social bonding", "社会联结"], ["collective response", "群体反应"], ["interpretive discussion", "解读性讨论"], ["distraction-free environment", "无干扰环境"], ["cinema-going culture", "影院文化"]]}, {"title": "Artificial Intelligence in Education", "category": "Technology & Education", "type": "Opinion", "signal": "High-frequency 2026 theme", "prompt": "To what extent should schools encourage students to use AI tools in their studies?", "issue": "information access、feedback、personalisation vs dependency、assessment validity 和 AI literacy。", "ideas": ["AI 可提供即时解释与 personalised feedback。", "正确使用可训练提问、核验和迭代。", "直接生成答案会造成 cognitive outsourcing。", "最佳模式是 guided integration：允许但要求 disclosure、verification 和 process-based assessment。"], "examples": ["学生先独立论证，再用 AI 寻找反方，比直接生成全文更有学习价值。", "教师可用课堂写作和口头解释验证真实能力。"], "vocab": [["AI literacy", "人工智能素养"], ["cognitive outsourcing", "认知外包"], ["independent reasoning", "独立推理"], ["assessment validity", "评估有效性"], ["personalised feedback", "个性化反馈"], ["verify information", "核实信息"], ["responsible use", "负责任使用"], ["process-based assessment", "过程性评估"]]}, {"title": "University: Employment vs Independent Thinking", "category": "Education", "type": "Agree / disagree", "signal": "Recurring question family", "prompt": "The main purpose of university should be employment preparation rather than independent thinking.", "issue": "就业能力与大学更广的智识、研究和适应功能。", "ideas": ["大学需要提供 employable skills 和 labour-market relevance。", "职业导向可减少 skills mismatch。", "具体职业技能会过时，independent judgement 和 adaptability 更持久。", "employment 是重要 outcome，但不应是 sole purpose。"], "examples": ["编程语言会更新，但逻辑、问题定义和自学能力持续有用。", "医学教育既要临床技能，也要伦理与证据判断。"], "vocab": [["employability", "就业能力"], ["labour-market relevance", "市场相关性"], ["skills mismatch", "技能错配"], ["independent judgement", "独立判断"], ["intellectual development", "智识发展"], ["adapt to change", "适应变化"], ["vocational training", "职业训练"], ["broader educational mission", "更广教育使命"]]}, {"title": "Examinations vs Continuous Assessment", "category": "Education", "type": "Discuss both views", "signal": "Recurring question family", "prompt": "Are examinations or continuous assessment more effective for evaluating students?", "issue": "comparability、reliability 对比 breadth、authenticity 和 teacher bias。", "ideas": ["统一考试易标准化并提供可比较指标。", "限时考试测试独立完成能力。", "一次考试可能被 anxiety 和偶然因素扭曲。", "mixed assessment 可兼顾 comparability 和更广能力。"], "examples": ["语言学习只靠选择题难以测口语沟通。", "医学和工程既要考理论，也要考实践任务。"], "vocab": [["standardised assessment", "标准化评估"], ["continuous assessment", "持续评估"], ["assessment reliability", "评估可靠性"], ["test anxiety", "考试焦虑"], ["coursework", "课程作业"], ["practical competence", "实践能力"], ["academic performance", "学业表现"], ["rote learning", "机械学习"]]}, {"title": "Health: Individual vs Government Responsibility", "category": "Health & Government", "type": "Discuss both views", "signal": "High-frequency recurring theme", "prompt": "Should individuals or governments take primary responsibility for public health?", "issue": "个人选择、结构条件、公共外部性和健康公平。", "ideas": ["饮食、运动、睡眠包含个人选择。", "政府无法替每个人做日常决定。", "选择受收入、城市设计、食品环境和医疗可及性限制。", "shared responsibility：政府塑造环境，个人作出选择。"], "examples": ["没有安全步行空间的社区，即使居民知道运动重要也难坚持。", "食品标签改变信息环境，但最终消费仍是个人决定。"], "vocab": [["public health", "公共健康"], ["preventive care", "预防性医疗"], ["health inequality", "健康不平等"], ["behavioural choices", "行为选择"], ["healthcare access", "医疗可及性"], ["structural constraints", "结构性限制"], ["shared responsibility", "共同责任"], ["public-health intervention", "公共卫生干预"]]}, {"title": "Ageing Population", "category": "Health & Society", "type": "Problems + solutions", "signal": "High-frequency recurring theme", "prompt": "What challenges does an ageing population create and how should societies respond?", "issue": "养老金、医疗、劳动力、长期照护，同时注意老年人的经济与社会贡献。", "ideas": ["退休人口增加提高 pension and healthcare spending。", "长期照护人员可能不足。", "健康老人可继续工作、志愿服务和家庭照护。", "政策重点应是 healthy ageing 和制度适应。"], "examples": ["弹性退休让专业人士逐步减少工时。", "无障碍交通和社区医疗可降低机构养老压力。"], "vocab": [["ageing population", "人口老龄化"], ["dependency ratio", "抚养比"], ["pension system", "养老金体系"], ["long-term care", "长期照护"], ["healthy ageing", "健康老龄化"], ["labour-force participation", "劳动力参与"], ["flexible retirement", "弹性退休"], ["age-friendly infrastructure", "适老设施"]]}, {"title": "Obesity and Food Policy", "category": "Health", "type": "Opinion / solutions", "signal": "Recurring theme", "prompt": "To what extent should governments intervene in people's diets and food choices?", "issue": "个人自由、食品环境、儿童保护和价格激励。", "ideas": ["标签、学校食品标准和儿童广告限制可纠正信息问题。", "健康饮食受价格和便利性影响，仅靠教育有限。", "过度限制成年人可能过于 paternalistic。", "支持 proportionate intervention，而非全面禁令。"], "examples": ["清晰营养标签帮助比较产品，不直接禁止选择。", "学校限制高糖饮料比禁止所有成年人购买更易正当化。"], "vocab": [["diet-related disease", "饮食相关疾病"], ["food environment", "食品环境"], ["nutritional labelling", "营养标签"], ["paternalistic policy", "家长式政策"], ["regressive tax", "累退税"], ["consumer choice", "消费者选择"], ["preventive intervention", "预防性干预"], ["public-health campaign", "公共健康宣传"]]}, {"title": "Punishment vs Rehabilitation", "category": "Crime & Justice", "type": "Discuss both views", "signal": "High-frequency recurring theme", "prompt": "Are longer prison sentences or rehabilitation more effective at reducing crime?", "issue": "deterrence、incapacitation、reoffending、成本和罪犯类型。", "ideas": ["监禁可立即隔离危险罪犯并强化法律边界。", "严重暴力犯罪需要 proportionate punishment。", "成瘾、教育不足等根因不会因延长刑期自动消失。", "可按 offence seriousness 分类：高风险监禁，低风险 rehabilitation。"], "examples": ["药物相关轻罪若不治疗成瘾，出狱后风险仍在。", "职业培训可提高刑满释放者合法就业机会。"], "vocab": [["deterrent effect", "威慑作用"], ["reoffending rate", "再犯率"], ["rehabilitation programme", "改造项目"], ["custodial sentence", "监禁刑"], ["public safety", "公共安全"], ["underlying causes of crime", "犯罪根因"], ["reintegration into society", "重新融入社会"], ["proportionate punishment", "比例惩罚"]]}, {"title": "Youth Crime", "category": "Crime & Society", "type": "Causes + solutions", "signal": "Recurring question family", "prompt": "What contributes to youth crime and how should society respond?", "issue": "家庭支持、学校脱离、同伴网络、机会结构和司法反应。", "ideas": ["school disengagement 和就业前景差降低合法路径吸引力。", "缺乏稳定成人支持和高风险同伴网络会增加暴露。", "过早严厉司法处理可能加重 marginalisation。", "early intervention + proportionate accountability 更稳。"], "examples": ["校内 mentoring 和职业培训可在辍学前提供替代路径。", "初犯轻罪可采用 restorative justice。"], "vocab": [["youth offending", "青少年犯罪"], ["school disengagement", "学校脱节"], ["peer influence", "同伴影响"], ["early intervention", "早期干预"], ["restorative justice", "恢复性司法"], ["social exclusion", "社会排斥"], ["at-risk young people", "高风险青年"], ["positive role models", "积极榜样"]]}, {"title": "Surveillance and Privacy", "category": "Technology & Society", "type": "Advantages / disadvantages", "signal": "Modern recurring theme", "prompt": "Do the security benefits of surveillance technologies outweigh privacy risks?", "issue": "安全效率 vs 隐私、权力不对称、数据滥用和 chilling effect。", "ideas": ["监控可帮助调查犯罪、诈骗和安全事件。", "大型系统中数据分析可识别异常。", "数据集中提高 breach 和 function creep 风险。", "关键在 necessity、proportionality、oversight 和 data minimisation。"], "examples": ["公共交通摄像头调查事故与无限期人脸追踪的侵入程度不同。", "完成服务所需数据与转售广告用途应区别。"], "vocab": [["mass surveillance", "大规模监控"], ["data privacy", "数据隐私"], ["independent oversight", "独立监督"], ["data minimisation", "数据最小化"], ["security breach", "安全泄露"], ["function creep", "用途漂移"], ["proportionate use", "比例适当使用"], ["chilling effect", "寒蝉效应"]]}, {"title": "Remote Work", "category": "Work & Economy", "type": "Advantages / disadvantages", "signal": "High-frequency modern theme", "prompt": "Do the advantages of working from home outweigh the disadvantages?", "issue": "通勤、autonomy、productivity、coordination、career visibility 和职业不平等。", "ideas": ["减少通勤节省时间，提高 schedule flexibility。", "企业可扩大招聘地域。", "缺乏 informal interaction 影响 mentoring 和 cohesion。", "hybrid model 通常最容易形成平衡论证。"], "examples": ["深度专注任务适合在家，创意会议和新人培训更适合线下。", "偏远地区人才可进入大城市公司而无需搬迁。"], "vocab": [["remote work", "远程办公"], ["hybrid working", "混合办公"], ["commuting time", "通勤时间"], ["employee autonomy", "员工自主性"], ["team cohesion", "团队凝聚力"], ["informal interaction", "非正式交流"], ["geographical flexibility", "地域灵活性"], ["workplace inequality", "职场不平等"]]}, {"title": "Automation and Employment", "category": "Technology & Work", "type": "Positive / negative development", "signal": "High-frequency 2026 theme", "prompt": "Is automation replacing human jobs mainly a positive or negative development?", "issue": "productivity、job displacement、新职业、reskilling 和收益分配。", "ideas": ["自动化承担重复危险任务并提高效率。", "新技术也会创造维护、设计和监管岗位。", "岗位消失与新岗位的技能、地点和时间可能错配。", "评价取决于 training、income support 和 labour mobility。"], "examples": ["自动结账减少部分收银岗位，却增加系统维护和物流需求。", "制造机器人减少危险重复动作，同时需要技术员维护。"], "vocab": [["job displacement", "岗位替代"], ["technological unemployment", "技术性失业"], ["productivity gains", "生产率收益"], ["reskilling", "技能再培训"], ["labour-market transition", "劳动力市场转型"], ["skills gap", "技能缺口"], ["income distribution", "收入分配"], ["complement human labour", "补充人类劳动"]]}, {"title": "Four-day Working Week", "category": "Work & Economy", "type": "Opinion", "signal": "2026 trending theme", "prompt": "Should a four-day working week become standard without reducing pay?", "issue": "productivity per hour、burnout、service coverage、行业差异和劳动成本。", "ideas": ["较短工周可能降低 burnout、absence 和 turnover。", "员工恢复更充分可提高 retention。", "医疗零售制造等无法简单压缩时间。", "最稳是 pilot programmes + sector-specific adoption。"], "examples": ["办公室可通过减少无效会议压缩工时，医院则需更多轮班。", "试行同时观察 output、absence 和 well-being。"], "vocab": [["four-day workweek", "四天工作制"], ["employee retention", "员工留任"], ["burnout", "职业倦怠"], ["staffing costs", "人员成本"], ["output per hour", "单位小时产出"], ["compressed workload", "压缩工作量"], ["sector-specific policy", "行业差异政策"], ["pilot programme", "试点"]]}, {"title": "Government Funding for the Arts", "category": "Government & Culture", "type": "Opinion", "signal": "Classic recurring theme", "prompt": "Should arts funding be reduced so more money can be spent on essential public services?", "issue": "opportunity cost、public goods、access、文化价值与经济 spillover。", "ideas": ["医疗教育资源不足时基本服务优先级更高。", "高端艺术项目若主要服务高收入者，公平性受质疑。", "博物馆、图书馆和文化教育具有 public-good characteristics。", "最稳是 targeted funding for accessible programmes。"], "examples": ["免费博物馆教育项目比豪华地标更易证明公共价值。", "地方文化节可支持社区参与和创意产业。"], "vocab": [["public funding", "公共资金"], ["essential services", "基本服务"], ["opportunity cost", "机会成本"], ["cultural participation", "文化参与"], ["public good", "公共物品"], ["community access", "社区可及性"], ["creative industries", "创意产业"], ["budget allocation", "预算配置"]]}, {"title": "Public Transport vs Private Cars", "category": "Transport & Cities", "type": "Opinion", "signal": "High-frequency recurring theme", "prompt": "Should cities discourage private car use and invest more in public transport?", "issue": "拥堵、land use、emissions、accessibility 和公平。", "ideas": ["公共交通以更少道路空间移动更多人。", "没有汽车者获得工作和公共服务的机会提高。", "低密度地区和行动不便者仍可能依赖汽车。", "sequence matters：先提供 viable alternatives，再限制。"], "examples": ["改善 first/last mile 可提高公交吸引力。", "拥堵费收入可反补公共交通。"], "vocab": [["traffic congestion", "交通拥堵"], ["public-transport network", "公共交通网络"], ["car dependency", "汽车依赖"], ["congestion charging", "拥堵收费"], ["first-and-last-mile access", "首末公里接驳"], ["transport accessibility", "交通可达性"], ["road capacity", "道路容量"], ["viable alternative", "可行替代"]]}, {"title": "Housing Affordability", "category": "Cities & Society", "type": "Causes + solutions", "signal": "High-frequency modern theme", "prompt": "Why has housing become unaffordable in many cities and what can governments do?", "issue": "供给约束、土地规划、需求集中、投资、基础设施和 social housing。", "ideas": ["就业教育高度集中，而 housing supply 建设慢。", "短租和 speculative demand 可进一步挤压长期供给。", "单纯限价可能削弱新增供给和维护激励。", "组合方案：transit-oriented supply + social housing + targeted protection。"], "examples": ["交通站点周边提高住宅密度可同时增加供给和减少通勤。", "公共住房需要连接就业、学校和服务。"], "vocab": [["housing affordability", "住房可负担性"], ["housing supply", "住房供给"], ["land-use regulation", "土地监管"], ["rental market", "租赁市场"], ["social housing", "社会住房"], ["high-density development", "高密度开发"], ["speculative demand", "投机需求"], ["urban sprawl", "城市蔓延"]]}, {"title": "Tourism and Local Communities", "category": "Tourism & Culture", "type": "Advantages / disadvantages", "signal": "Recurring question family", "prompt": "Do the economic benefits of international tourism outweigh harm to local communities and environments?", "issue": "收入和就业 vs seasonality、住房、crowding、环境和地方文化。", "ideas": ["旅游给小企业和服务业带来外部收入。", "收入可支持文化保护。", "overtourism 会推高租金并挤压公共空间。", "benefits depend on management：tax、caps、local ownership。"], "examples": ["旅游税可用于维护历史街区和公共交通。", "短租过度集中会把长期住房转为游客住宿。"], "vocab": [["mass tourism", "大众旅游"], ["local economy", "地方经济"], ["seasonal employment", "季节性就业"], ["overtourism", "过度旅游"], ["tourism revenue", "旅游收入"], ["local residents", "当地居民"], ["visitor management", "游客管理"], ["cultural preservation", "文化保护"]]}, {"title": "Globalisation and Local Culture", "category": "Globalisation & Culture", "type": "Positive / negative development", "signal": "High-frequency recurring theme", "prompt": "Is increasing cultural similarity caused by globalisation a positive or negative development?", "issue": "文化交流、选择、local production、identity 和商业同质化。", "ideas": ["跨文化交流扩大艺术、思想和商业选择。", "全球平台给本地创作者国际受众。", "大型平台和品牌可能挤压 local cultural production。", "关键不是隔绝外部影响，而是本地创作者能否有资源和可见度。"], "examples": ["本地音乐人可用全球平台传播地方语言作品。", "历史街区全部变成连锁品牌会失去独特商业生态。"], "vocab": [["cultural homogenisation", "文化同质化"], ["cultural exchange", "文化交流"], ["local identity", "地方身份"], ["cultural diversity", "文化多样性"], ["global platform", "全球平台"], ["local cultural production", "本地文化生产"], ["commercial standardisation", "商业标准化"], ["cultural adaptation", "文化适应"]]}, {"title": "Social Media and Public Debate", "category": "Media & Society", "type": "Opinion", "signal": "High-frequency modern theme", "prompt": "Does social media give people a voice at the cost of reducing the quality of public debate?", "issue": "表达门槛、信息多样性、misinformation、算法激励和 polarisation。", "ideas": ["社交媒体让传统媒体忽视的群体获得可见性。", "实时传播促进信息和社会动员。", "algorithmic amplification 奖励争议和简化内容。", "改进需要 platform accountability + media literacy。"], "examples": ["未经核实的短视频可能比后续更正传播更广。", "专业人士也可直接向公众解释复杂问题。"], "vocab": [["public discourse", "公共讨论"], ["misinformation", "错误信息"], ["algorithmic amplification", "算法放大"], ["media literacy", "媒介素养"], ["source verification", "来源核验"], ["polarisation", "极化"], ["freedom of expression", "表达自由"], ["information ecosystem", "信息生态"]]}, {"title": "Advertising and Consumerism", "category": "Media & Economy", "type": "Opinion", "signal": "Recurring question family", "prompt": "Does advertising encourage people to buy things they do not need?", "issue": "information vs persuasion、consumer choice、status consumption、儿童和竞争。", "ideas": ["情绪、稀缺和身份信号可创造超出功能需求的欲望。", "定向广告提高重复暴露，放大 impulse buying。", "广告也提供 product information 并帮助新品牌竞争。", "应区分 informative advertising 与 manipulative targeting。"], "examples": ["价格和功能比较广告具有信息价值。", "利用儿童角色推动高糖食品更具操纵性。"], "vocab": [["consumer demand", "消费需求"], ["impulse buying", "冲动购买"], ["targeted advertising", "定向广告"], ["status consumption", "身份消费"], ["consumer awareness", "消费者意识"], ["commercial persuasion", "商业说服"], ["brand competition", "品牌竞争"], ["disposable culture", "一次性消费文化"]]}, {"title": "Children and Screen Time", "category": "Family & Technology", "type": "Causes + solutions", "signal": "High-frequency recurring theme", "prompt": "Why are children spending more time on digital devices and how should parents and schools respond?", "issue": "平台设计、家庭便利、学习和社交功能、注意力、睡眠和 digital literacy。", "ideas": ["设备同时承担娱乐、社交和学习，使用自然增加。", "忙碌家庭可能把屏幕当作方便的 supervision substitute。", "不是所有 screen time 相同：创作、学习与 passive scrolling 影响不同。", "应关注 content、context 和 displacement，而非纯时长。"], "examples": ["视频制作属于 active use，无目的刷短视频更容易挤占时间。", "睡前设备规则能针对 sleep disruption。"], "vocab": [["screen time", "屏幕时间"], ["digital dependency", "数字依赖"], ["passive consumption", "被动消费"], ["digital literacy", "数字素养"], ["attention span", "注意持续时间"], ["sleep disruption", "睡眠干扰"], ["parental boundaries", "家长边界"], ["age-appropriate use", "符合年龄的使用"]]}, {"title": "Parenting: Freedom vs Control", "category": "Family & Society", "type": "Discuss both views", "signal": "Recurring question family", "prompt": "Should parents give children considerable freedom or impose strict rules?", "issue": "autonomy、安全、maturity、responsibility 和 boundaries。", "ideas": ["适度自主让孩子练习 decision-making 和承担后果。", "过度控制可能阻碍 internal judgement。", "儿童的风险评估和冲动控制有限，需要边界。", "graduated autonomy：自由随年龄和责任逐步扩大。"], "examples": ["年幼儿童网络使用需要明确规则，青少年可在预算和课程上获得更多参与。", "说明规则理由比单纯命令更有助于内化。"], "vocab": [["parental supervision", "家长监督"], ["personal autonomy", "个人自主"], ["age-appropriate boundaries", "年龄适当边界"], ["decision-making skills", "决策能力"], ["sense of responsibility", "责任感"], ["overprotective parenting", "过度保护"], ["self-regulation", "自我调节"], ["gradual independence", "逐步独立"]]}, {"title": "International Aid", "category": "Government & Global Issues", "type": "Discuss both views", "signal": "Recurring global theme", "prompt": "Should wealthy countries provide more financial aid, or are other forms of assistance more effective?", "issue": "emergency relief、dependency、capacity building、governance 和 technology transfer。", "ideas": ["紧急情况下资金可快速满足 basic needs。", "基础设施和公共服务建设需要财政资源。", "长期现金援助若缺少 accountability 可能低效。", "training、technology transfer 和 market access 更利于长期 self-sufficiency。"], "examples": ["灾后现金支持重建住房，长期农业项目则需要技术和市场连接。", "奖学金增加人力资本，但要注意 brain drain。"], "vocab": [["foreign aid", "国际援助"], ["humanitarian relief", "人道救援"], ["capacity building", "能力建设"], ["self-sufficiency", "自给能力"], ["technology transfer", "技术转移"], ["institutional capacity", "制度能力"], ["aid dependency", "援助依赖"], ["accountability mechanism", "问责机制"]]}, {"title": "Science and Space Funding", "category": "Science & Government", "type": "Opinion", "signal": "Recurring question family", "prompt": "Should money spent on space exploration and scientific research instead solve problems on Earth?", "issue": "opportunity cost、basic research、spillovers、长期不确定性和 public goods。", "ideas": ["基础研究会产生难以预测的 technological spillover。", "私人企业常不愿承担回报不确定的基础研究。", "基本服务严重不足时 opportunity cost 更突出。", "应区分高价值 research 与 prestige spending。"], "examples": ["地球观测卫星帮助天气预报、灾害和农业管理。", "基础研究短期无产品，但可建立长期技术能力。"], "vocab": [["scientific research", "科学研究"], ["space exploration", "太空探索"], ["basic research", "基础研究"], ["technological spillover", "技术溢出"], ["research funding", "科研资金"], ["opportunity cost", "机会成本"], ["long-term innovation", "长期创新"], ["public investment", "公共投资"]]}, {"title": "Wildlife Conservation", "category": "Environment", "type": "Opinion", "signal": "Classic recurring theme", "prompt": "Is too much money spent protecting endangered species and wildlife?", "issue": "生态系统服务、伦理、预算和 habitat-based conservation。", "ideas": ["生物多样性支持 pollination、water systems 和 resilience。", "人类活动造成灭绝风险时存在伦理责任。", "昂贵单一物种项目可能挤压更高影响的 habitat protection。", "支持 ecosystem-based conservation，而非无限预算。"], "examples": ["保护湿地同时保护多种物种并提供防洪。", "恢复栖息地可能比长期人工繁育单一物种更有系统价值。"], "vocab": [["biodiversity", "生物多样性"], ["endangered species", "濒危物种"], ["habitat conservation", "栖息地保护"], ["ecosystem services", "生态系统服务"], ["ecological resilience", "生态韧性"], ["species extinction", "物种灭绝"], ["conservation funding", "保护资金"], ["habitat restoration", "栖息地恢复"]]}, {"title": "Income Inequality", "category": "Economy & Society", "type": "Problems + solutions", "signal": "High-frequency recurring theme", "prompt": "What problems can a widening rich-poor gap create and how can harmful inequality be reduced?", "issue": "区分 inequality、poverty、social mobility 和 opportunity，不要主张绝对平均。", "ideas": ["极端差距可让教育、住房和医疗机会高度分化。", "财富集中可能转化为政治和市场影响力。", "一定收入差距可反映技能、风险和创新回报。", "目标是 fair opportunity + minimum standards + progressive but predictable policy。"], "examples": ["优质早教可在收入差距存在时改善代际流动。", "税制可先减少 loopholes，而不是只提高名义税率。"], "vocab": [["income inequality", "收入不平等"], ["social mobility", "社会流动"], ["equal opportunity", "机会平等"], ["progressive taxation", "累进税制"], ["wealth concentration", "财富集中"], ["living standards", "生活水平"], ["intergenerational disadvantage", "代际劣势"], ["tax avoidance", "避税"]]}, {"title": "Consumerism and Waste", "category": "Environment & Society", "type": "Causes + solutions", "signal": "Recurring modern theme", "prompt": "Why are people buying and discarding more products, and how can waste be reduced?", "issue": "cheap production、advertising、planned obsolescence、repairability 和 convenience。", "ideas": ["低成本生产和快速更新降低 replacement cost。", "营销和社会比较缩短 perceived product life。", "不是所有消费增长都等于浪费。", "solutions：durability standards、right to repair、producer responsibility。"], "examples": ["手机电池难以更换会推动整机替换。", "押金返还制度能提高包装回收。"], "vocab": [["disposable culture", "一次性文化"], ["planned obsolescence", "计划性淘汰"], ["product durability", "产品耐用性"], ["right to repair", "维修权"], ["consumer behaviour", "消费行为"], ["producer responsibility", "生产者责任"], ["material waste", "物质浪费"], ["circular economy", "循环经济"]]}, {"title": "Free University Education", "category": "Education & Government", "type": "Opinion", "signal": "Recurring question family", "prompt": "Should university education be free for everyone?", "issue": "access、public benefit、private return、budget constraints 和 targeting。", "ideas": ["高学费提高 debt burden 并阻碍低收入学生。", "高等教育产生 educated workforce 和 research 的公共收益。", "毕业者通常也获得较高 private return。", "targeted support 可能比 universal free tuition 更高效。"], "examples": ["低收入学生全额资助，中高收入毕业生用收入挂钩方式分担。", "公共资金可优先支持 shortage fields 或 disadvantaged groups。"], "vocab": [["tuition fees", "学费"], ["student debt", "学生债务"], ["equal access", "平等机会"], ["public subsidy", "公共补贴"], ["private return", "私人回报"], ["means-tested support", "经济状况资助"], ["income-contingent repayment", "收入挂钩还款"], ["higher-education funding", "高教融资"]]}, {"title": "Online Learning vs Classrooms", "category": "Education & Technology", "type": "Opinion", "signal": "High-frequency recurring theme", "prompt": "Will online learning eventually replace traditional classroom teaching?", "issue": "access、flexibility、interaction、self-regulation、practical learning 和 hybrid design。", "ideas": ["在线课程降低 geographic barriers 并提供 flexible pacing。", "数字资源适合理论内容和重复练习。", "teacher feedback、peer interaction 和 routines 支持 motivation。", "online 更可能 complement 而不是 fully replace classroom。"], "examples": ["理论讲座可线上，实验和口语研讨需要线下。", "blended learning 可让课堂用于讨论和应用。"], "vocab": [["online learning", "在线学习"], ["face-to-face instruction", "面对面教学"], ["geographical access", "地域可及性"], ["self-regulated learning", "自我调节学习"], ["peer interaction", "同伴互动"], ["practical training", "实践训练"], ["blended learning", "混合学习"], ["flexible pacing", "灵活进度"]]}, {"title": "Negative News vs Positive Reporting", "category": "Media & Society", "type": "Discuss both views", "signal": "Recurring question family", "prompt": "Should news organisations report more positive stories instead of focusing on negative events?", "issue": "watchdog role、newsworthiness、risk information、distorted worldview 和 constructive journalism。", "ideas": ["犯罪、冲突和失败具有 public interest，媒体不能为了积极而弱化。", "监督机构是新闻的核心职责。", "持续负面选择可能造成 availability bias。", "更好的方式是 contextual / constructive reporting，而非积极新闻配额。"], "examples": ["报道犯罪时加入长期趋势可避免单个事件扭曲认知。", "气候报道既呈现风险，也可呈现有效政策。"], "vocab": [["news coverage", "新闻报道"], ["watchdog role", "监督角色"], ["public interest", "公共利益"], ["negative bias", "负面偏向"], ["constructive journalism", "建设性新闻"], ["contextual reporting", "背景化报道"], ["risk perception", "风险感知"], ["availability bias", "可得性偏差"]]}];
+const SPEAKING_LAB = [{"title": "A person interested in a medical career", "category": "People & Work", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you enjoy learning about health or medicine?", "What kinds of jobs did you find interesting when you were younger?", "Do you know anyone whose work you admire?"], "cue": "Describe someone you know who would like to work in healthcare.", "bullets": ["who this person is", "what kind of healthcare work interests them", "why they are attracted to this field", "how you feel about their ambition"], "part3": ["Why are some young people reluctant to enter medical professions?", "Should governments subsidise the training of doctors and nurses?", "What qualities matter most in healthcare work?", "Why do some socially valuable jobs receive relatively low pay?"], "scaffold": ["人物关系：先用一句话说明你和这个人的关系。", "动机来源：给一个具体经历，而不是只说 helpful / meaningful。", "时间线：过去如何产生兴趣 → 现在如何准备 → 将来打算。", "评价：加入一个让步，例如工作辛苦但仍值得。"], "vocab": [["be drawn to a career in", "被某种职业吸引"], ["work under pressure", "在压力下工作"], ["a demanding profession", "高要求的职业"], ["a strong sense of purpose", "强烈的使命感"], ["hands-on experience", "实践经验"], ["make a tangible difference", "产生切实影响"]]}, {"title": "A new law you would introduce", "category": "Society & Hypotheticals", "signal": "Recent-recall style · Aug 2026", "part1": ["Are there many rules in your daily life?", "Did your school have strict rules?", "Do you usually follow rules even when nobody is watching?"], "cue": "Describe a new rule or law you would like your country or city to introduce.", "bullets": ["what the rule would be", "what problem it would address", "how it could be implemented", "why you think it would be worthwhile"], "part3": ["Do laws normally change behaviour, or do attitudes need to change first?", "When is a strict law justified?", "Should minor offences ever result in prison sentences?", "Why are some laws widely ignored?"], "scaffold": ["范围要小：选一个你能解释清楚、能实际执行的规则。", "问题链：现状 → 具体损害 → 为什么现有措施不足。", "执行方式：who enforces it + what happens if people ignore it。", "限制条件：承认法律不能单独解决所有问题。"], "vocab": [["introduce legislation", "出台立法"], ["enforce a rule", "执行规定"], ["act as a deterrent", "起威慑作用"], ["public compliance", "公众遵守"], ["a proportionate penalty", "适度的惩罚"], ["close a regulatory gap", "填补监管空白"]]}, {"title": "A place you found boring", "category": "Places", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you get bored easily?", "What do you usually do when you have to wait somewhere?", "Do you prefer lively or quiet places?"], "cue": "Describe a place you visited that you found rather boring.", "bullets": ["where it was", "why you went there", "what the place was like", "why you found it boring"], "part3": ["Why do different people find different places interesting?", "Are young people less tolerant of boredom now?", "Can a quiet place still be valuable?", "How has technology changed the way people deal with waiting?"], "scaffold": ["不要怕话题“负面”：无聊本身就是故事冲突。", "用感官细节：lighting / noise / colour / waiting time。", "加入一个小插曲，让答案不是纯描述。", "结尾可以反转：boring, but useful / unexpectedly peaceful。"], "vocab": [["a dull atmosphere", "沉闷的氛围"], ["have very little going on", "几乎没什么可做"], ["kill time", "消磨时间"], ["drag on", "拖得很久"], ["a redeeming feature", "一个可取之处"], ["surprisingly peaceful", "出乎意料地安静舒适"]]}, {"title": "A technological problem", "category": "Technology & Experiences", "signal": "Recent-recall style · Aug 2026", "part1": ["How dependent are you on your phone or computer?", "Do you usually solve technical problems yourself?", "What piece of technology do you use most often?"], "cue": "Describe a time when a device or piece of technology caused you a problem.", "bullets": ["what the technology was", "what went wrong", "what you tried to do", "how the problem was eventually resolved"], "part3": ["Has technology made daily life less stressful or more stressful overall?", "Should older adults receive more support with digital skills?", "Why are people often impatient when technology fails?", "Should essential services always provide a non-digital option?"], "scaffold": ["先交代 stakes：为什么这个故障当时很麻烦。", "按顺序讲 attempts：restart → search → ask for help。", "用过去时形成清晰叙事。", "结尾给 lesson learned：backup / patience / redundancy。"], "vocab": [["freeze unexpectedly", "突然死机"], ["run into a technical issue", "遇到技术问题"], ["troubleshoot the problem", "排查问题"], ["back up important files", "备份重要文件"], ["a temporary workaround", "临时替代方案"], ["rely heavily on", "高度依赖"]]}, {"title": "A traditional object", "category": "Culture & Objects", "signal": "Recent-recall style · Aug 2026", "part1": ["Are there any old objects in your home?", "Do you prefer modern or traditional designs?", "Have you ever received something that belonged to an older relative?"], "cue": "Describe a traditional object that you find interesting or meaningful.", "bullets": ["what the object is", "what it looks like", "where you saw or obtained it", "why it matters to you or your culture"], "part3": ["Why do people keep old objects even when they are no longer useful?", "Should museums focus more on everyday objects or famous works?", "How can traditional crafts survive modernisation?", "Do younger people value family possessions as much as older generations?"], "scaffold": ["不要只讲外观，要讲 object → person → memory 的联系。", "解释它以前的功能和现在的意义。", "可以用 contrast：ordinary in the past, symbolic now。", "最后回到文化或家庭身份。"], "vocab": [["be passed down through generations", "代代相传"], ["sentimental value", "情感价值"], ["craftsmanship", "工艺"], ["a link to the past", "与过去的联系"], ["retain its original function", "保留原有功能"], ["cultural significance", "文化意义"]]}, {"title": "A person with a successful business", "category": "People & Work", "signal": "Recent-recall style · Aug 2026", "part1": ["Would you like to run your own business?", "Do you know many small businesses near where you live?", "What makes you trust a business?"], "cue": "Describe someone you know or know about who has built a successful business.", "bullets": ["who the person is", "what the business does", "how it developed", "what you find impressive about it"], "part3": ["Why do some small businesses succeed while others fail?", "Is entrepreneurship suitable for everyone?", "How has social media changed small businesses?", "Should schools teach basic business skills?"], "scaffold": ["讲成长轨迹：small beginning → turning point → current success。", "不要只说 hard-working，说明具体做对了什么。", "加入 customer / product / timing 等商业因素。", "最后说你从这个人身上学到了什么。"], "vocab": [["start from scratch", "白手起家"], ["build a loyal customer base", "建立忠实客户群"], ["spot a gap in the market", "发现市场空缺"], ["scale up a business", "扩大业务规模"], ["word-of-mouth", "口碑传播"], ["a sustainable business model", "可持续商业模式"]]}, {"title": "A time you got up extremely early", "category": "Experiences", "signal": "Recent-recall style · Aug 2026", "part1": ["Are you a morning person?", "What time do you usually get up?", "Do you enjoy doing things early in the morning?"], "cue": "Describe an occasion when you had to get up much earlier than usual.", "bullets": ["when it happened", "why you had to get up early", "what you did afterwards", "how you felt about the experience"], "part3": ["Why do some people naturally prefer mornings?", "Are modern work schedules too rigid?", "Should schools start later for teenagers?", "Does waking up early necessarily make someone more productive?"], "scaffold": ["时间感要清楚：alarm → first reaction → what happened next。", "用身体感受增强真实性：half-asleep / groggy / wide awake later。", "说明为什么值得或不值得。", "不要强行拔高，结尾可以很生活化。"], "vocab": [["set an alarm for", "把闹钟设在……"], ["be barely awake", "几乎没醒"], ["feel groggy", "昏昏沉沉"], ["the streets were deserted", "街道空无一人"], ["be worth the early start", "值得早起"], ["throw off my sleep schedule", "打乱作息"]]}, {"title": "A live sports event", "category": "Events & Sport", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you watch sport regularly?", "Is there a sport that is popular where you live?", "Do you prefer watching sport online or in person?"], "cue": "Describe a live sporting event that you watched or would like to watch.", "bullets": ["what the event was", "where it took place", "who you watched it with", "why the experience was memorable"], "part3": ["Why do people become emotionally attached to sports teams?", "Do major sporting events benefit host cities?", "Should governments spend public money on professional sport?", "How has streaming changed sports audiences?"], "scaffold": ["先解释你为什么在乎这场比赛，否则后面容易空。", "现场感：crowd / noise / anticipation / turning point。", "用一个关键瞬间串起 2 分钟。", "Part 3 注意从个人体验切换到社会层面。"], "vocab": [["a packed stadium", "座无虚席的体育场"], ["the atmosphere was electric", "现场气氛极其热烈"], ["a nail-biting finish", "令人紧张的结局"], ["cheer someone on", "为某人加油"], ["a major sporting fixture", "重要体育赛事"], ["bring people together", "把人们凝聚起来"]]}, {"title": "A time you changed an important plan", "category": "Experiences & Decisions", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you like making plans in advance?", "How do you feel when plans change unexpectedly?", "Are you usually flexible with your schedule?"], "cue": "Describe a time when you had to change an important plan.", "bullets": ["what the original plan was", "why it changed", "what you decided to do instead", "how you felt about the change"], "part3": ["Why are some people better at adapting to change than others?", "Do people plan too much nowadays?", "When should people stick to a plan despite difficulties?", "How do unexpected changes affect organisations?"], "scaffold": ["明确 original plan 和 trigger。", "讲 decision process，而不是只讲结果。", "用 if / would have 讨论原方案可能的后果。", "结尾评价：better decision / inconvenient but necessary。"], "vocab": [["change course", "改变方向"], ["at short notice", "临时、短时间通知"], ["weigh up the options", "权衡选项"], ["come up with a backup plan", "想出备用方案"], ["work out better than expected", "结果比预期好"], ["adapt to changing circumstances", "适应变化的情况"]]}, {"title": "A friend from childhood", "category": "People & Memories", "signal": "Recent-recall style · Aug 2026", "part1": ["Did you have many friends when you were a child?", "Is it easy for you to stay in touch with old friends?", "What do you usually do with close friends?"], "cue": "Describe a friend you knew when you were a child.", "bullets": ["who the person was", "how you became friends", "what you used to do together", "what you remember most clearly about them"], "part3": ["Why do childhood friendships often feel different from adult friendships?", "Is it easier or harder to make close friends now?", "Can online friendships be as meaningful as face-to-face ones?", "Why do some friendships last while others fade?"], "scaffold": ["用一个共同活动把人物写活。", "过去习惯可以用 used to / would。", "加入一个具体小故事，而不是罗列性格形容词。", "最后说明现在是否仍联系，不需要强行圆满。"], "vocab": [["go back a long way", "认识很多年"], ["lose touch with", "失去联系"], ["have a lot in common", "有很多共同点"], ["get on really well", "相处很好"], ["a shared memory", "共同记忆"], ["pick up where we left off", "久别后仍能无缝继续相处"]]}, {"title": "A day out that cost very little", "category": "Experiences & Lifestyle", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you often spend money when you go out?", "What free activities are available where you live?", "Do expensive activities always feel more enjoyable?"], "cue": "Describe an enjoyable day out that did not cost much money.", "bullets": ["where you went", "who you were with", "what you did", "why you enjoyed it despite spending little"], "part3": ["Why do people sometimes associate price with quality?", "Should cities provide more free leisure facilities?", "Are young people under pressure to spend money socially?", "What low-cost activities are good for communities?"], "scaffold": ["核心不是“省钱”，而是为什么体验仍然丰富。", "按 day timeline 讲，比列活动更自然。", "给一个具体感官细节或对话。", "结尾可以反思 expensive ≠ memorable。"], "vocab": [["cost next to nothing", "几乎没花钱"], ["make the most of", "充分利用"], ["a low-key day", "轻松低调的一天"], ["good value for money", "物有所值"], ["without breaking the bank", "不花太多钱"], ["the company mattered more than the setting", "陪伴比场所更重要"]]}, {"title": "Food for a special occasion", "category": "Food & Culture", "signal": "Recent-recall style · Aug 2026", "part1": ["Do you enjoy cooking?", "Is there a food you eat only on special occasions?", "Do you prefer eating at home or in restaurants for celebrations?"], "cue": "Describe food that is usually prepared for a special occasion in your family or culture.", "bullets": ["what the food is", "when people eat it", "how it is prepared or served", "why it is associated with the occasion"], "part3": ["Why does food play such a large role in celebrations?", "Are traditional foods becoming less important?", "How does migration change food traditions?", "Should schools teach children about local food culture?"], "scaffold": ["说清 occasion → food → ritual 的关系。", "可讲 preparation process，但不要变成菜谱。", "加入家庭分工或记忆，让答案个人化。", "Part 3 可以从 identity / migration / commercialisation 延展。"], "vocab": [["be associated with", "与……联系在一起"], ["a festive dish", "节庆菜肴"], ["family recipe", "家传食谱"], ["prepare it from scratch", "从头制作"], ["bring back memories", "唤起回忆"], ["a sense of tradition", "传统感"]]}, {"title": "An interesting video", "category": "Media & Technology", "signal": "Recent-recall style · Aug 2026", "part1": ["What kinds of videos do you usually watch?", "Do you prefer short videos or longer programmes?", "Have you ever learned something useful from a video?"], "cue": "Describe an online video that you found especially interesting.", "bullets": ["what the video was about", "where you watched it", "what caught your attention", "why you still remember it"], "part3": ["Why are short videos so popular?", "Can video be a better learning medium than text?", "How should people judge whether online videos are reliable?", "Do algorithms narrow people's interests?"], "scaffold": ["先说明你为什么点开它。", "不要只复述内容，要讲 why it worked on you。", "选一个具体 point / image / argument。", "Part 3 可以谈 attention、credibility、algorithm。"], "vocab": [["catch my attention", "吸引我的注意"], ["hold my interest", "持续吸引我"], ["go down a rabbit hole", "不断深挖相关内容"], ["a well-explained point", "解释清楚的观点"], ["fact-check a claim", "核实说法"], ["algorithmic recommendation", "算法推荐"]]}, {"title": "A message that received no reply", "category": "Communication & Experiences", "signal": "Recent-recall style · Aug 2026", "part1": ["How often do you send messages every day?", "Do you reply immediately or later?", "Which do you prefer: calling or messaging?"], "cue": "Describe a time when you sent someone an important message but did not receive a reply.", "bullets": ["who you contacted", "what the message was about", "why you expected a reply", "what happened in the end"], "part3": ["Why do people sometimes ignore messages?", "Has instant messaging made people expect replies too quickly?", "Is it acceptable to leave work messages unanswered after office hours?", "How is written digital communication different from face-to-face conversation?"], "scaffold": ["明确为什么 reply mattered。", "讲你等待时的推断和情绪变化。", "最后说明真实原因，形成小转折。", "Part 3 不要停在礼貌，要谈 expectation / boundary / ambiguity。"], "vocab": [["leave someone on read", "已读不回"], ["get back to someone", "回复某人"], ["assume the worst", "往坏处想"], ["a delayed response", "延迟回复"], ["set communication boundaries", "设定沟通边界"], ["misread someone's tone", "误解语气"]]}, {"title": "A home you would visit but not live in", "category": "Places & Homes", "signal": "Recent-recall style · Aug 2026", "part1": ["What kind of home do you live in?", "What feature matters most to you in a home?", "Do you enjoy visiting unusual buildings?"], "cue": "Describe a home or type of home that you would enjoy visiting but would not want to live in.", "bullets": ["what the home is like", "where it might be", "why you would like to visit it", "why you would not choose to live there"], "part3": ["Why do housing preferences change with age?", "Are unusual homes practical in everyday life?", "How much should architecture prioritise appearance over function?", "Why do people enjoy looking at luxury homes?"], "scaffold": ["天然适合 contrast：fascinating to visit / impractical to live in。", "说 2–3 个设计细节即可。", "居住缺点要具体：maintenance / commute / privacy / accessibility。", "结尾回到自己的 real-life priorities。"], "vocab": [["visually striking", "视觉上很惊艳"], ["impractical for everyday life", "日常生活中不实用"], ["high-maintenance", "维护成本高"], ["living space", "居住空间"], ["prioritise form over function", "形式优先于功能"], ["fit my lifestyle", "适合我的生活方式"]]}, {"title": "A skill you would like to learn", "category": "Skills & Education", "signal": "Current recurring theme", "part1": ["Do you enjoy learning new skills?", "What skill did you learn recently?", "Do you prefer learning alone or with a teacher?"], "cue": "Describe a practical or creative skill that you would like to learn.", "bullets": ["what the skill is", "why it interests you", "how you would learn it", "how it could be useful or enjoyable"], "part3": ["Should schools teach more practical skills?", "Has the internet made self-teaching easier?", "Are formally taught skills more valuable than self-taught ones?", "Why do adults sometimes stop learning new skills?"], "scaffold": ["避免只说 useful；说清 trigger：为什么现在想学。", "学习路径要具体：course / practice / feedback。", "加入 obstacle：time / cost / patience。", "结尾讲真实用途，不需要夸大。"], "vocab": [["pick up a new skill", "学会新技能"], ["learn by trial and error", "通过试错学习"], ["have a steep learning curve", "学习曲线陡峭"], ["build confidence", "建立信心"], ["put a skill into practice", "把技能用于实践"], ["be largely self-taught", "主要靠自学"]]}, {"title": "A time you helped someone", "category": "People & Experiences", "signal": "Current recurring theme", "part1": ["Do you often help people around you?", "Is it easy for you to ask others for help?", "What kind of help do people usually need in daily life?"], "cue": "Describe a time when you helped someone with a problem or task.", "bullets": ["who the person was", "what they needed help with", "what you did", "how you felt afterwards"], "part3": ["Why are some people more willing to help strangers than others?", "Should volunteering be compulsory for students?", "Can helping too much make people dependent?", "How has technology changed the way people help one another?"], "scaffold": ["问题必须具体，否则容易变成空泛好人故事。", "说明你实际做了什么，而不是只说 supported。", "结果可以 imperfect，更真实。", "Part 3 注意帮助和 dependency 的边界。"], "vocab": [["lend someone a hand", "帮某人一把"], ["step in", "介入帮忙"], ["talk someone through something", "一步步教某人"], ["take some pressure off", "减轻压力"], ["return the favour", "回报帮助"], ["go out of my way to", "特意费心去做"]]}, {"title": "A useful piece of technology", "category": "Technology", "signal": "Current recurring theme", "part1": ["What device do you use every day?", "Have your technology habits changed recently?", "Is there any technology you try not to use too much?"], "cue": "Describe a piece of technology that is genuinely useful in your daily life.", "bullets": ["what it is", "how you use it", "how often you rely on it", "why it is particularly useful to you"], "part3": ["Does technology always save time?", "Why do some people resist new technology?", "Should children learn more about digital privacy?", "What technologies may disappear in the next decade?"], "scaffold": ["选具体 device / app，而不是泛泛说 smartphone。", "讲 2 个不同使用场景。", "加入 downside，答案会更成熟。", "Part 3 从 convenience 扩展到 dependence / privacy。"], "vocab": [["streamline a task", "简化任务流程"], ["come in handy", "派上用场"], ["save me a lot of hassle", "省去很多麻烦"], ["become dependent on", "变得依赖"], ["a time-saving feature", "节省时间的功能"], ["use something in moderation", "适度使用"]]}, {"title": "A memorable journey", "category": "Travel & Experiences", "signal": "Current recurring theme", "part1": ["Do you enjoy travelling?", "What kind of transport do you prefer?", "Do you plan journeys carefully?"], "cue": "Describe a journey that you remember particularly well.", "bullets": ["where you went", "who you travelled with", "what happened during the journey", "why it has stayed in your memory"], "part3": ["Why do people remember some journeys more than destinations?", "Has cheap travel changed people's attitudes to holidays?", "Should tourism be limited in overcrowded places?", "How might transport change in the future?"], "scaffold": ["journey 不等于 travel guide，重点是事件和感受。", "选一个 turning point：delay / view / conversation / mistake。", "描述路线只需够听众理解。", "结尾解释 memory 的意义。"], "vocab": [["set off early", "早早出发"], ["take the scenic route", "走风景路线"], ["run into a delay", "遇到延误"], ["a change of scenery", "换个环境"], ["stick in my mind", "留在记忆中"], ["make the journey worthwhile", "让旅程值得"]]}, {"title": "A person who influenced you", "category": "People", "signal": "Current recurring theme", "part1": ["Who do you usually ask for advice?", "Do young people need role models?", "Have your role models changed over time?"], "cue": "Describe a person who has had a meaningful influence on the way you think or behave.", "bullets": ["who the person is", "how you know them", "what they did or said", "how they influenced you"], "part3": ["Why do people look for role models?", "Are public figures good role models for young people?", "Can teachers influence students beyond academic subjects?", "Does social media make influence stronger or more superficial?"], "scaffold": ["不要堆 personality adjectives，讲一个具体 moment。", "说明 before / after 的变化。", "影响可以很小：habit / attitude / decision。", "Part 3 区分 admiration 与 influence。"], "vocab": [["have a lasting influence on", "对……产生长期影响"], ["look up to someone", "敬佩某人"], ["shape the way I think", "塑造我的思维方式"], ["set an example", "树立榜样"], ["challenge my assumptions", "挑战我的固有想法"], ["rub off on someone", "潜移默化影响某人"]]}, {"title": "Your perfect job", "category": "Work & Future", "signal": "Recent-recall style · Aug 2026", "part1": ["What do you enjoy most about your current work or studies?", "Would you prefer a stable job or an exciting one?", "What makes a workplace pleasant?"], "cue": "Describe a job that would suit you extremely well.", "bullets": ["what the job would involve", "what kind of environment you would work in", "what skills it would require", "why it would suit you"], "part3": ["Why do people's career priorities change over time?", "Is job satisfaction more important than salary?", "Will young people change careers more often in the future?", "What should employers do to retain talented staff?"], "scaffold": ["别只讲 dream title，讲 daily work。", "分成 role / environment / people / autonomy。", "承认现实 trade-off，例如 meaningful but demanding。", "Part 3 注意 personal preference 与 labour-market trend 区分。"], "vocab": [["a good fit for me", "很适合我"], ["have a degree of autonomy", "有一定自主权"], ["find work fulfilling", "觉得工作有成就感"], ["a supportive work environment", "支持性的工作环境"], ["career progression", "职业发展"], ["strike a balance between", "在……之间取得平衡"]]}, {"title": "A traditional celebration", "category": "Culture & Events", "signal": "Recent-recall style · Aug 2026", "part1": ["What celebration do you enjoy most?", "Did your family celebrate festivals differently when you were a child?", "Do you prefer large celebrations or small ones?"], "cue": "Describe a traditional celebration that is important in your culture or family.", "bullets": ["what the celebration is", "when it takes place", "what people usually do", "why it remains meaningful"], "part3": ["Why do some traditional celebrations survive while others disappear?", "Should children learn about traditional customs at school?", "Can commercialisation damage cultural traditions?", "How do festivals change when people migrate to other countries?"], "scaffold": ["避免百科全书式介绍，加入你的 family version。", "选 2 个 ritual 详细讲，不要列十个。", "说明 meaning：reunion / remembrance / identity。", "Part 3 可以谈 adaptation，而不是 tradition vs modernity 二选一。"], "vocab": [["mark an occasion", "庆祝某个时刻"], ["observe a tradition", "遵循传统"], ["bring the family together", "让家人团聚"], ["be deeply rooted in", "深深植根于"], ["pass a tradition on", "传承传统"], ["evolve over time", "随时间演变"]]}, {"title": "Outer space and science", "category": "Part 1 Focus", "signal": "Reported Part 1 theme · Aug 2026", "part1": ["Did you learn much about planets or space at school?", "Would you like to travel into space if it became safer?", "Do you follow science news?", "Which scientific topic do you find easiest to talk about?"], "cue": "Describe a scientific topic or discovery that you find interesting.", "bullets": ["what the topic is", "how you first heard about it", "what you understand about it", "why it interests you"], "part3": ["Why do some people lose interest in science after school?", "Should governments spend more on basic scientific research?", "How can scientists communicate complex ideas to the public?", "Does science fiction help or distort public understanding of science?"], "scaffold": ["Part 1 不需要知识炫技：个人反应 + 一个具体细节即可。", "Part 2 只讲你真正懂的一小块。", "不会术语时用 paraphrase，不要沉默。", "Part 3 可以谈 science communication / funding / uncertainty。"], "vocab": [["spark my curiosity", "激发好奇心"], ["have a basic grasp of", "对……有基本理解"], ["scientific breakthrough", "科学突破"], ["make a complex idea accessible", "让复杂概念易懂"], ["evidence-based", "以证据为基础的"], ["push the boundaries of knowledge", "拓展知识边界"]]}, {"title": "Sleep and concentration", "category": "Part 1 Focus", "signal": "Reported Part 1 theme · Aug 2026", "part1": ["How many hours of sleep do you normally get?", "Do you ever take naps?", "When is it easiest for you to concentrate?", "What tends to distract you?"], "cue": "Describe something you do when you need to concentrate for a long time.", "bullets": ["what the task usually is", "where you do it", "what helps you concentrate", "why this method works for you"], "part3": ["Why are people finding it harder to concentrate?", "Should workplaces protect employees from constant notifications?", "Does multitasking reduce productivity?", "How can schools help students develop sustained attention?"], "scaffold": ["Part 1 用真实 routine，答案自然很多。", "解释 one strategy + why it works。", "不要把 concentration 全怪给手机，可以谈 sleep / environment。", "Part 3 使用 cause → consequence → response。"], "vocab": [["stay focused on", "专注于"], ["get easily distracted", "很容易分心"], ["sustain attention", "维持注意力"], ["switch off notifications", "关闭通知"], ["get a decent night's sleep", "睡个好觉"], ["work in short bursts", "分短时段工作"]]}];
+const KEY='ielts_os_pwa_v23';
+const LEGACY_KEYS=['ielts_os_pwa_v22','ielts_os_pwa_v21','ielts_os_pwa_v20','ielts_os_static_topiclab_v15','ielts_os_static_adaptive_v14','ielts_os_static_stable','ielts_os_nologin_v24','ielts_os_nologin_v23','ielts_os_nologin_v22','ielts_learning_os_v1'];
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function freshState(){
+  return {seed:clone(SEED),days:{},history:[],essay:'',topicLab:{daily:{},mastery:{},notes:{}},speakingLab:{daily:{},mastery:{},notes:{},scores:{}},version:'2.3.2'};
+}
+function hydrateState(x){
+  const f=freshState();
+  if(!x||typeof x!=='object') return f;
+
+  // Preserve user activity.
+  f.days = x.days && typeof x.days==='object' ? clone(x.days) : {};
+  for(const [date,rawDay] of Object.entries(f.days)){
+    let day=rawDay&&typeof rawDay==='object'?rawDay:{};
+    // v1.4/v1.5 used a sessions[] structure. Convert it once into the PWA current+archive model.
+    if(Array.isArray(day.sessions)&&day.sessions.length){
+      const ai=Math.min(Math.max(Number(day.activeSession)||0,0),day.sessions.length-1);
+      const active=day.sessions[ai]||{};
+      const archive=day.sessions.filter((_,i)=>i!==ai).map((s,i)=>({
+        session_id:s.id||`${date}-S${s.number||i+1}`,
+        setNo:Number(s.number)||i+1,
+        topic:s.topic||'Practice',
+        focus:s.focus||'',
+        items:Array.isArray(s.items)?clone(s.items):[],
+        answers:Array.isArray(s.answers)?clone(s.answers):Array(10).fill(''),
+        ratings:Array.isArray(s.ratings)?clone(s.ratings):Array(10).fill(null),
+        corrections:Array.isArray(s.corrections)?clone(s.corrections):Array(10).fill(null),
+        completed:!!s.completed,
+        correctionImported:!!s.correctionImported
+      }));
+      day={
+        answers:Array.isArray(active.answers)?clone(active.answers):Array(10).fill(''),
+        shown:Array.isArray(active.shown)?clone(active.shown):Array(10).fill(false),
+        ratings:Array.isArray(active.ratings)?clone(active.ratings):Array(10).fill(null),
+        corrections:Array.isArray(active.corrections)?clone(active.corrections):Array(10).fill(null),
+        archive,
+        setNo:Number(active.number)||ai+1,
+        completed:!!active.completed,
+        correctionImported:!!active.correctionImported,
+        items:Array.isArray(active.items)?clone(active.items):null,
+        topic:active.topic||null,
+        focus:active.focus||null
+      };
+    }
+    day.answers = Array.isArray(day.answers) ? day.answers.slice(0,10) : Array(10).fill('');
+    while(day.answers.length<10) day.answers.push('');
+    day.shown = Array.isArray(day.shown) ? day.shown.slice(0,10) : Array(10).fill(false);
+    while(day.shown.length<10) day.shown.push(false);
+    day.ratings = Array.isArray(day.ratings) ? day.ratings.slice(0,10) : Array(10).fill(null);
+    while(day.ratings.length<10) day.ratings.push(null);
+    day.corrections = Array.isArray(day.corrections) ? day.corrections.slice(0,10) : Array(10).fill(null);
+    while(day.corrections.length<10) day.corrections.push(null);
+    day.archive=Array.isArray(day.archive)?day.archive:[];
+    day.setNo=Number(day.setNo)||1;
+    f.days[date]=day;
+  }
+  f.history = Array.isArray(x.history) ? x.history : [];
+  f.essay = typeof x.essay==='string' ? x.essay : '';
+  f.topicLab=x.topicLab&&typeof x.topicLab==='object'?x.topicLab:{daily:{},mastery:{},notes:{}};f.topicLab.daily=f.topicLab.daily||{};f.topicLab.mastery=f.topicLab.mastery||{};f.topicLab.notes=f.topicLab.notes||{};
+  f.speakingLab=x.speakingLab&&typeof x.speakingLab==='object'?x.speakingLab:{daily:{},mastery:{},notes:{},scores:{}};f.speakingLab.daily=f.speakingLab.daily||{};f.speakingLab.mastery=f.speakingLab.mastery||{};f.speakingLab.notes=f.speakingLab.notes||{};f.speakingLab.scores=f.speakingLab.scores||{};
+
+  // Preserve old bank edits when present; otherwise restore full built-in seed.
+  if(x.seed && typeof x.seed==='object'){
+    const oldSeed=x.seed;
+    f.seed.topicPacks = Array.isArray(oldSeed.topicPacks) && oldSeed.topicPacks.length ? oldSeed.topicPacks : clone(SEED.topicPacks);
+    f.seed.language = Array.isArray(oldSeed.language) && oldSeed.language.length ? oldSeed.language : clone(SEED.language);
+    f.seed.errors = Array.isArray(oldSeed.errors) && oldSeed.errors.length ? oldSeed.errors : clone(SEED.errors);
+  }
+
+  // Critical fallback: never allow an empty study system.
+  if(!Array.isArray(f.seed.topicPacks) || f.seed.topicPacks.length===0) f.seed.topicPacks=clone(SEED.topicPacks);
+  if(!Array.isArray(f.seed.language) || f.seed.language.length===0) f.seed.language=clone(SEED.language);
+  if(!Array.isArray(f.seed.errors) || f.seed.errors.length===0) f.seed.errors=clone(SEED.errors);
+
+  f.version='2.3.2';
+  return f;
+}
+function load(){try{const raw=localStorage.getItem(KEY);if(raw)return hydrateState(JSON.parse(raw));for(const k of LEGACY_KEYS){const old=localStorage.getItem(k);if(old){const s=hydrateState(JSON.parse(old));try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}return s}}}catch(e){console.warn('Local storage unavailable; running in memory mode.',e)}return freshState()}
+let state=load();
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+    if(typeof scheduleCloudSync==='function') scheduleCloudSync();
+    return true
+  }catch(e){console.warn('Save skipped',e);return false}
+}
+save();
+window.addEventListener('error',e=>{
+ const b=document.getElementById('fatal-banner');
+ if(b){b.style.display='block';b.textContent='页面运行错误：'+(e.message||'unknown error');}
+});
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function localDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function dayIndex(){const start=new Date(2026,7,24);const now=new Date();const a=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.floor((a-start)/86400000)}
+function packForToday(){const packs=state.seed.topicPacks;return packs[((dayIndex()%packs.length)+packs.length)%packs.length]}
+function ensureDay(d){
+ if(!d||typeof d!=='object')d={};
+ d.answers=Array.isArray(d.answers)?d.answers:Array(10).fill('');while(d.answers.length<10)d.answers.push('');
+ d.shown=Array.isArray(d.shown)?d.shown:Array(10).fill(false);while(d.shown.length<10)d.shown.push(false);
+ d.ratings=Array.isArray(d.ratings)?d.ratings:Array(10).fill(null);while(d.ratings.length<10)d.ratings.push(null);
+ d.corrections=Array.isArray(d.corrections)?d.corrections:Array(10).fill(null);while(d.corrections.length<10)d.corrections.push(null);
+ d.archive=Array.isArray(d.archive)?d.archive:[];d.setNo=Number(d.setNo)||1;d.completed=!!d.completed;d.correctionImported=!!d.correctionImported;
+ return d;
+}
+function todayState(){const date=localDate();if(!state.days[date])state.days[date]=ensureDay({});state.days[date]=ensureDay(state.days[date]);return state.days[date]}
+function currentPack(){const d=todayState();if(Array.isArray(d.items)&&d.items.length)return {topic:d.topic||'Adaptive Practice',focus:d.focus||'adaptive review',items:d.items};return packForToday()}
+function currentSessionId(){return `${localDate()}-S${todayState().setNo}`}
+function adaptiveItems(setNo){
+ const packs=state.seed.topicPacks,p=packs[(dayIndex()+setNo-1)%packs.length],items=p.items.slice(0,6).map((x,i)=>({...clone(x),kind:'new'}));
+ const errs=state.seed.errors.filter(x=>x.status!=='Resolved').sort((a,b)=>(b.occurrences||1)-(a.occurrences||1));
+ for(let i=0;i<Math.min(2,errs.length);i++){const e=errs[(setNo+i-2+errs.length)%errs.length];items.push({function:'错误迁移',kind:'error_transfer',cn:`纠错并改写成自然英文：${e.original}\n提示：${e.note||e.category}`,model:e.correct})}
+ const pri={Unstable:0,Learning:1,New:2,Active:3},langs=state.seed.language.filter(x=>x.status!=='Mastered').sort((a,b)=>(pri[a.status]??4)-(pri[b.status]??4)||(a.reviewCount||0)-(b.reviewCount||0));
+ for(let i=0;i<Math.min(2,langs.length);i++){const l=langs[(setNo+i-2+langs.length)%langs.length];items.push({function:'语料复习',kind:'language_review',cn:`使用表达 “${l.expression}” 写一个适用于 IELTS Task 2 的完整句子。中文释义：${l.meaning}`,model:`Target expression: ${l.expression}${l.example?' | Example: '+l.example:''}`})}
+ let j=6;while(items.length<10&&j<p.items.length)items.push({...clone(p.items[j++]),kind:'new'});
+ return {topic:p.topic,focus:`${p.focus} · 6 new + 2 error transfer + 2 language review`,items}
+}
+function setPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelector(`[data-page="${id}"]`)?.classList.add('active')}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+
+function renderDashboard(){
+ $('seed-topics').textContent=state.seed.topicPacks.length;$('seed-sentences').textContent=state.seed.topicPacks.reduce((n,p)=>n+p.items.length,0);$('seed-language').textContent=state.seed.language.length;$('seed-errors').textContent=state.seed.errors.length;$('seed-topiclab').textContent=TOPIC_LAB.length;$('seed-speaking').textContent=SPEAKING_LAB.length;
+ const d=todayState(),p=currentPack(),done=d.answers.filter(x=>String(x||'').trim()).length;
+ $('m-practice').textContent=`${done}/10`;$('m-topic').textContent=`${p.topic} · Set ${d.setNo}`;$('m-language').textContent=state.seed.language.length;
+ $('m-review').textContent=state.seed.language.filter(x=>['Unstable','Learning','New'].includes(x.status)).length+state.seed.errors.filter(x=>x.status!=='Resolved').length;
+ $('today-summary').innerHTML=`<div class="row"><span class="pill">Set ${d.setNo}</span><b>${esc(p.topic)}</b></div><p class="muted">${done}/10 answered · ${d.completed?'completed':'in progress'} · ${d.correctionImported?'correction imported':'not yet imported'} · ${d.archive.length} earlier set(s) today</p><button class="btn primary" onclick="setPage('practice')">进入今日练习</button> <button class="btn secondary" onclick="setPage('speaking')">今日口语话题</button>`;
+ renderBars('dash-errors',errorCounts());renderBars('dash-mastery',masteryCounts());
+}
+function kindTag(x){return x.kind==='error_transfer'?'<span class="pill kind-error">错误迁移</span>':x.kind==='language_review'?'<span class="pill kind-review">语料复习</span>':'<span class="pill kind-new">新题</span>'}
+function renderPractice(){
+ const d=todayState(),p=currentPack();$('practice-head').textContent=`${localDate()} · Set ${d.setNo} · ${p.topic} · ${p.focus}`;
+ $('complete-session').textContent=d.completed?'本组已完成 ✓':'完成本组训练';
+ $('practice-list').innerHTML=p.items.map((x,i)=>`<div class="card practice"><div class="row">${kindTag(x)}<span class="pill">${esc(x.function)}</span><span class="muted">#${i+1}</span><span class="push ${d.ratings[i]==='good'?'good':d.ratings[i]==='review'?'warn':'muted'}">${d.ratings[i]==='good'?'掌握较好':d.ratings[i]==='review'?'需要复习':''}</span></div><div class="cn">${esc(x.cn)}</div><textarea data-answer="${i}" placeholder="${x.kind==='error_transfer'?'Correct the sentence…':x.kind==='language_review'?'Write one IELTS sentence…':'Translate into English…'}">${esc(d.answers[i])}</textarea><div class="answer-actions row"><button class="btn secondary" data-show="${i}">${d.shown[i]?'隐藏参考':'显示参考'}</button><button class="btn goodbtn" data-rate-good="${i}">掌握较好</button><button class="btn warnbtn" data-rate-review="${i}">需要复习</button></div><div class="model ${d.shown[i]?'show':''}"><strong>Reference / Target</strong>${esc(x.model)}</div>${d.corrections[i]?`<div class="correction-note"><b>Imported correction</b><div>${esc(d.corrections[i].corrected_version||d.corrections[i].band8_version||'Imported')}</div></div>`:''}</div>`).join('');
+ document.querySelectorAll('[data-answer]').forEach(t=>t.oninput=e=>{d.answers[+e.target.dataset.answer]=e.target.value;save();renderDashboard()});
+ document.querySelectorAll('[data-show]').forEach(b=>b.onclick=()=>{d.shown[+b.dataset.show]=!d.shown[+b.dataset.show];save();renderPractice()});
+ document.querySelectorAll('[data-rate-good]').forEach(b=>b.onclick=()=>{d.ratings[+b.dataset.rateGood]='good';save();renderAll()});
+ document.querySelectorAll('[data-rate-review]').forEach(b=>b.onclick=()=>{d.ratings[+b.dataset.rateReview]='review';save();renderAll()});
+}
+function completeCurrent(){const d=todayState(),n=d.answers.filter(x=>String(x||'').trim()).length;if(n<10&&!confirm(`还有 ${10-n} 题未作答，仍标记完成吗？`))return;d.completed=true;d.completedAt=new Date().toISOString();save();renderAll()}
+function newSet(){
+ const d=todayState(),p=currentPack(),n=d.answers.filter(x=>String(x||'').trim()).length;if(n<10&&!confirm('当前组还没完成，仍生成下一组吗？'))return;
+ d.archive.push({session_id:currentSessionId(),setNo:d.setNo,topic:p.topic,focus:p.focus,items:clone(p.items),answers:clone(d.answers),ratings:clone(d.ratings),corrections:clone(d.corrections),completed:d.completed,correctionImported:d.correctionImported});
+ d.setNo++;const a=adaptiveItems(d.setNo);d.items=a.items;d.topic=a.topic;d.focus=a.focus;d.answers=Array(10).fill('');d.shown=Array(10).fill(false);d.ratings=Array(10).fill(null);d.corrections=Array(10).fill(null);d.completed=false;d.correctionImported=false;save();renderAll();
+}
+function correctionPrompt(){
+ const d=todayState(),p=currentPack(),sid=currentSessionId();let t=`请批改我的 IELTS 句子训练。逐题检查 grammar / collocation / precision / naturalness；不要为了生僻词汇给高评价，中文解释要具体。\n\nDATE: ${localDate()}\nSESSION_ID: ${sid}\nTOPIC: ${p.topic}\n\n`;
+ p.items.forEach((x,i)=>t+=`[${i+1}] ${x.function}\n任务：${x.cn}\n我的答案：${d.answers[i]||'[未作答]'}\n\n`);
+ t+=`回答最后必须输出：\n<IELTS_CORRECTION_PACK>\n{"format":"IELTS_CORRECTION_PACK_V1","date":"${localDate()}","session_id":"${sid}","summary":{"estimated_level":7.0,"main_issue_zh":"..."},"items":[{"index":1,"rating":"review","estimated_band":7.0,"corrected_version":"...","band8_version":"...","errors":[{"original":"...","corrected":"...","category":"Collocation","note_zh":"...","pattern_key":"..."}],"reusable_chunks":[{"expression":"...","meaning_zh":"...","type":"Collocation","topic":"${p.topic}","status":"Learning"}]}]}\n</IELTS_CORRECTION_PACK>\nitems 覆盖所有已作答题；无错误时 errors=[]；不要编造错误；只提取真正值得主动输出的 reusable_chunks。`;return t
+}
+async function copyDay(){const t=correctionPrompt();try{await navigator.clipboard.writeText(t);alert('已复制本组内容和自动导入格式要求。')}catch(e){prompt('请手动复制：',t)}}
+function parsePack(raw){let t=String(raw||'').trim(),m=t.match(/<IELTS_CORRECTION_PACK>([\s\S]*?)<\/IELTS_CORRECTION_PACK>/i);if(m)t=m[1].trim();t=t.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');if(!t.trim().startsWith('{')){const a=t.indexOf('{'),b=t.lastIndexOf('}');if(a>=0&&b>a)t=t.slice(a,b+1)}return JSON.parse(t)}
+function mergeError(e){if(!e?.original||!e?.corrected)return;const key=e.pattern_key||`${e.original}→${e.corrected}`.toLowerCase();let x=state.seed.errors.find(z=>(z.patternKey&&z.patternKey===key)||(`${z.original}→${z.correct}`.toLowerCase()===`${e.original}→${e.corrected}`.toLowerCase()));if(x){x.occurrences=(x.occurrences||1)+1;x.status='Active';x.note=e.note_zh||x.note;x.category=e.category||x.category;x.patternKey=key}else state.seed.errors.unshift({original:e.original,correct:e.corrected,category:e.category||'Precision',note:e.note_zh||'',patternKey:key,status:'Active',occurrences:1})}
+function mergeChunk(c){if(!c?.expression)return;let x=state.seed.language.find(z=>z.expression.trim().toLowerCase()===c.expression.trim().toLowerCase());if(x){x.meaning=c.meaning_zh||x.meaning;x.type=c.type||x.type;x.topic=c.topic||x.topic;x.reviewCount=(x.reviewCount||0)+1;if(x.status!=='Mastered'&&c.status)x.status=c.status}else state.seed.language.unshift({expression:c.expression,meaning:c.meaning_zh||'',type:c.type||'Collocation',topic:c.topic||'General',status:c.status||'New',reviewCount:0,correctStreak:0})}
+function targetBySession(sid){const d=todayState();if(sid===currentSessionId())return d;return d.archive.find(x=>x.session_id===sid)||null}
+function importPack(){
+ const st=$('correction-import-status');try{const p=parsePack($('correction-pack-input').value),t=targetBySession(p.session_id);if(!t)throw new Error('找不到对应 session_id');if(!Array.isArray(p.items))throw new Error('items 格式缺失');t.corrections=t.corrections||Array(10).fill(null);let ec=0,lc=0;
+ p.items.forEach(r=>{const i=Number(r.index)-1;if(i<0||i>=10)return;t.corrections[i]=r;const es=Array.isArray(r.errors)?r.errors:[];t.ratings[i]=es.length||r.rating==='review'?'review':'good';es.forEach(e=>{mergeError(e);ec++});(r.reusable_chunks||[]).forEach(c=>{mergeChunk(c);lc++})});
+ t.correctionImported=true;t.correctionSummary=p.summary||null;save();st.className='good';st.textContent=`导入成功：${p.items.length} 题 · ${ec} 条错误 · ${lc} 个语料更新`;renderAll()}catch(e){st.className='bad';st.textContent='导入失败：'+e.message}}
+$('complete-session').onclick=completeCurrent;$('new-set').onclick=newSet;$('copy-day').onclick=copyDay;$('import-correction-pack').onclick=importPack;$('clear-correction-pack').onclick=()=>{$('correction-pack-input').value='';$('correction-import-status').textContent=''};
+
+function topicDayIndex(){const start=new Date(2026,7,24),now=new Date(),a=new Date(now.getFullYear(),now.getMonth(),now.getDate());return ((Math.floor((a-start)/86400000)%TOPIC_LAB.length)+TOPIC_LAB.length)%TOPIC_LAB.length}
+function topicState(){state.topicLab=state.topicLab||{daily:{},mastery:{},notes:{}};const t=state.topicLab;t.daily=t.daily||{};t.mastery=t.mastery||{};t.notes=t.notes||{};const d=localDate();if(t.daily[d]===undefined)t.daily[d]=topicDayIndex();return t}
+function currentTopicIndex(){return Number(topicState().daily[localDate()])||0}
+function setTopicIndex(i){const n=TOPIC_LAB.length;topicState().daily[localDate()]=((i%n)+n)%n;save();renderTopicLab()}
+function topicStatus(i){return topicState().mastery[i]||'new'}
+function reusableExpressions(){return [['Short-term gains need to be weighed against long-term costs.','短期收益需要与长期成本权衡。'],['The key issue is not whether A, but under what conditions A is beneficial.','关键不是是否 A，而是 A 在什么条件下有益。'],['The benefits are unlikely to be distributed evenly.','这些收益不太可能被均等分配。'],['A does not automatically lead to B.','A 不会自动导致 B。'],['A more proportionate approach would be to...','更合乎比例的做法是……'],['This problem is partly individual, but also structural.','这个问题部分属于个人层面，也属于结构层面。']] }
+function addTopicVocab(i){const t=TOPIC_LAB[i];let a=0,u=0;for(const [e,m] of t.vocab){let x=state.seed.language.find(z=>String(z.expression).toLowerCase()===String(e).toLowerCase());if(x){x.topic=t.category;x.meaning=m||x.meaning;if(x.status==='New')x.status='Learning';u++}else{state.seed.language.unshift({expression:e,meaning:m,type:'Topic Collocation',topic:t.category,status:'New',reviewCount:0,correctStreak:0});a++}}save();renderAll();alert(`Language Bank：新增 ${a}，更新 ${u}。`)}
+function renderTopicLab(){const i=currentTopicIndex(),t=TOPIC_LAB[i],ts=topicState(),st=topicStatus(i),fam=st==='weak'?'fam-weak':st==='ok'?'fam-ok':'fam-new',note=ts.notes[i]||'';const ideaA=t.ideas.slice(0,2),ideaB=t.ideas.slice(2);$('topic-daily').innerHTML=`<div class="topic-hero"><div class="row"><span class="pill">${esc(t.category)}</span><span class="pill">${esc(t.type)}</span><span class="pill">${esc(t.signal)}</span><span class="pill ${fam}">${st==='weak'?'无话可说 / 待强化':st==='ok'?'已建立素材':'未标记'}</span><span class="push muted">${i+1}/${TOPIC_LAB.length}</span></div><h2 style="margin:14px 0 4px">${esc(t.title)}</h2><div class="topic-prompt">${esc(t.prompt)}</div><div class="notice"><b>真正要想清楚：</b>${esc(t.issue)}</div><div class="section-title">Idea Map</div><div class="grid grid-2"><div class="idea-card"><h3>角度 A</h3><ul>${ideaA.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="idea-card"><h3>角度 B / 限定</h3><ul>${ideaB.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="section-title">可迁移例子</div><div class="grid grid-2">${t.examples.map(x=>`<div class="idea-card">${esc(x)}</div>`).join('')}</div><div class="section-title">High-frequency Topic Collocations</div><div class="topic-vocab">${t.vocab.map(([e,m])=>`<div class="vocab-item"><b>${esc(e)}</b><span>${esc(m)}</span></div>`).join('')}</div><div class="row" style="margin-top:12px"><button class="btn primary" data-add-topic-vocab="${i}">一键加入 Language Bank</button><button class="btn warnbtn" data-topic-mark="weak">这个话题我容易无话可说</button><button class="btn goodbtn" data-topic-mark="ok">我已经建立基本素材</button></div><div class="section-title">Reusable Argument Expressions</div><div class="card" style="box-shadow:none">${reusableExpressions().map(([e,m])=>`<div class="review-card"><b>${esc(e)}</b><div class="meaning">${esc(m)}</div></div>`).join('')}</div><div class="section-title">5-minute Output</div><div class="card" style="box-shadow:none"><div class="review-card">1. 不看上面的句子，用自己的话写一个支持观点。</div><div class="review-card">2. 写一个让步句：承认反方合理之处，再加限制条件。</div><div class="review-card">3. 用今天至少 2 个 collocations 写一个 topic sentence + explanation。</div><textarea id="topic-note" class="topic-note" placeholder="中文/英文均可：快速写观点、因果链、topic sentence…">${esc(note)}</textarea><div class="meaning">自动保存。目标是先建立素材，再提高语言精度。</div></div></div>`;document.querySelectorAll('[data-add-topic-vocab]').forEach(b=>b.onclick=()=>addTopicVocab(+b.dataset.addTopicVocab));document.querySelectorAll('[data-topic-mark]').forEach(b=>b.onclick=()=>{ts.mastery[i]=b.dataset.topicMark;save();renderTopicLab()});$('topic-note').oninput=e=>{ts.notes[i]=e.target.value;save()};const cats=[...new Set(TOPIC_LAB.map(x=>x.category))].sort(),sel=$('topic-filter'),cur=sel.value;sel.innerHTML='<option value="">全部话题</option>'+cats.map(c=>`<option ${c===cur?'selected':''}>${esc(c)}</option>`).join('');renderTopicList()}
+function renderTopicList(){const q=($('topic-search').value||'').toLowerCase(),cat=$('topic-filter').value;$('topic-list').innerHTML=TOPIC_LAB.map((t,i)=>({t,i})).filter(({t})=>(!cat||t.category===cat)&&(!q||[t.title,t.category,t.prompt,t.issue,...t.vocab.flat()].join(' ').toLowerCase().includes(q))).map(({t,i})=>{const s=topicStatus(i),fam=s==='weak'?'fam-weak':s==='ok'?'fam-ok':'fam-new';return `<div class="topic-mini" data-open-topic="${i}"><div class="row"><span class="pill">${esc(t.category)}</span><span class="pill ${fam}">${s==='weak'?'待强化':s==='ok'?'已积累':'未标记'}</span></div><div class="t">${esc(t.title)}</div><div class="m">${esc(t.type)} · ${esc(t.signal)}</div></div>`}).join('');document.querySelectorAll('[data-open-topic]').forEach(x=>x.onclick=()=>{setTopicIndex(+x.dataset.openTopic);window.scrollTo({top:0,behavior:'smooth'})})}
+$('topic-prev').onclick=()=>setTopicIndex(currentTopicIndex()-1);$('topic-next').onclick=()=>setTopicIndex(currentTopicIndex()+1);$('topic-search').oninput=renderTopicList;$('topic-filter').onchange=renderTopicList;
+
+let speakingTimer=null,speakingRemaining=0,speakingTimerMode='';
+function speakingState(){
+ state.speakingLab=state.speakingLab||{daily:{},mastery:{},notes:{},scores:{}};
+ const s=state.speakingLab;s.daily=s.daily||{};s.mastery=s.mastery||{};s.notes=s.notes||{};s.scores=s.scores||{};
+ const d=localDate();if(s.daily[d]===undefined){const base=new Date(2026,7,29),now=new Date(),a=new Date(now.getFullYear(),now.getMonth(),now.getDate());s.daily[d]=((Math.floor((a-base)/86400000)%SPEAKING_LAB.length)+SPEAKING_LAB.length)%SPEAKING_LAB.length}
+ return s;
+}
+function currentSpeakingIndex(){return Number(speakingState().daily[localDate()])||0}
+function setSpeakingIndex(i){const s=speakingState(),n=SPEAKING_LAB.length;s.daily[localDate()]=((i%n)+n)%n;save();renderSpeaking()}
+function speakingStatus(i){return speakingState().mastery[i]||'new'}
+function startSpeakingTimer(seconds,mode){
+ clearInterval(speakingTimer);speakingRemaining=seconds;speakingTimerMode=mode;renderTimer();
+ speakingTimer=setInterval(()=>{speakingRemaining--;renderTimer();if(speakingRemaining<=0){clearInterval(speakingTimer);speakingTimer=null;const d=$('speaking-timer-display');if(d)d.textContent='TIME';}},1000)
+}
+function resetSpeakingTimer(){clearInterval(speakingTimer);speakingTimer=null;speakingRemaining=0;speakingTimerMode='';renderTimer()}
+function renderTimer(){
+ const d=$('speaking-timer-display'),l=$('speaking-timer-label');if(!d||!l)return;
+ if(!speakingRemaining){d.textContent='00:00';l.textContent='Ready'}else{d.textContent=`${String(Math.floor(speakingRemaining/60)).padStart(2,'0')}:${String(speakingRemaining%60).padStart(2,'0')}`;l.textContent=speakingTimerMode}
+}
+function addSpeakingVocab(i){
+ const t=SPEAKING_LAB[i];let a=0,u=0;
+ for(const [e,m] of t.vocab){let x=state.seed.language.find(z=>String(z.expression).trim().toLowerCase()===String(e).trim().toLowerCase());if(x){x.meaning=m||x.meaning;x.topic='Speaking · '+t.category;if(x.status==='New')x.status='Learning';u++}else{state.seed.language.unshift({expression:e,meaning:m,type:'Speaking Chunk',topic:'Speaking · '+t.category,status:'New',reviewCount:0,correctStreak:0});a++}}
+ save();renderAll();alert(`Speaking → Language Bank：新增 ${a}，更新 ${u}。`)
+}
+function speakingPracticePrompt(i){
+ const t=SPEAKING_LAB[i];
+ return `请作为 IELTS Speaking examiner 和严格口语教练，带我完成下面这一套练习。\n\n规则：\n1. Part 1 一次只问一个问题；我回答后不要逐题点评，直接问下一题。\n2. Part 2 给我 1 分钟准备时间，然后严格按 2 分钟回答；不要中途帮助我组织答案。\n3. Part 3 一次只问一个问题；根据我的回答自然追问，但不要逐题点评。\n4. 整套结束后统一给反馈，并按 Fluency & Coherence / Lexical Resource / Grammatical Range & Accuracy / Pronunciation 四项分别给出精确 band，再给 overall estimate。\n5. 指出重复、卡顿、语法、搭配和中式表达；给更自然的替换，但不要把答案改成背诵式范文。\n6. 最后给 5 个最值得复用的口语表达。\n\nTOPIC: ${t.title}\n\nPART 1:\n${t.part1.map((q,n)=>`${n+1}. ${q}`).join('\n')}\n\nPART 2:\n${t.cue}\nYou should say:\n${t.bullets.map(x=>'- '+x).join('\n')}\n\nPART 3:\n${t.part3.map((q,n)=>`${n+1}. ${q}`).join('\n')}\n\n现在从 Part 1 第 1 题开始，只问问题，不要先解释。`;
+}
+async function copySpeakingPrompt(i){
+ const txt=speakingPracticePrompt(i);try{await navigator.clipboard.writeText(txt);alert('已复制口语陪练指令。直接粘贴给 ChatGPT 即可开始。')}catch(e){prompt('请复制下面内容：',txt)}
+}
+function renderSpeaking(){
+ const i=currentSpeakingIndex(),t=SPEAKING_LAB[i],ss=speakingState(),status=speakingStatus(i),note=ss.notes[i]||'',scores=ss.scores[i]||{};
+ const fam=status==='weak'?'fam-weak':status==='ok'?'fam-ok':'fam-new';
+ $('speaking-daily').innerHTML=`<div class="speaking-hero">
+ <div class="row"><span class="pill">${esc(t.category)}</span><span class="pill">${esc(t.signal)}</span><span class="pill ${fam}">${status==='weak'?'容易卡住 / 待强化':status==='ok'?'已建立素材':'未标记'}</span><span class="push muted">${i+1}/${SPEAKING_LAB.length}</span></div>
+ <h2 style="margin:14px 0 4px">${esc(t.title)}</h2>
+ <div class="section-title">Part 1 · Quick answers</div><div class="card" style="box-shadow:none">${t.part1.map((q,n)=>`<div class="speaking-question"><b>${n+1}.</b> ${esc(q)}</div>`).join('')}</div>
+ <div class="section-title">Part 2 · Cue card</div><div class="cue-card"><h3>${esc(t.cue)}</h3><div class="muted">You should say:</div><ul>${t.bullets.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+ <div class="timer-box" style="margin-top:12px"><div><div class="timer-display" id="speaking-timer-display">00:00</div><div class="timer-label" id="speaking-timer-label">Ready</div></div><button class="btn secondary" id="timer-prep">Prep 1:00</button><button class="btn secondary" id="timer-speak">Speak 2:00</button><button class="btn secondary" id="timer-reset">Reset</button></div>
+ <div class="section-title">Story / Idea Scaffold</div><div class="grid grid-2">${t.scaffold.map(x=>`<div class="idea-card">${esc(x)}</div>`).join('')}</div>
+ <div class="section-title">Part 3 · Discussion</div><div class="card" style="box-shadow:none">${t.part3.map((q,n)=>`<div class="speaking-question"><b>${n+1}.</b> ${esc(q)}</div>`).join('')}</div>
+ <div class="section-title">Natural Speaking Chunks</div><div class="topic-vocab">${t.vocab.map(([e,m])=>`<div class="vocab-item"><b>${esc(e)}</b><span>${esc(m)}</span></div>`).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="btn primary" data-add-speak-vocab="${i}">加入 Language Bank</button><button class="btn secondary" data-copy-speak="${i}">复制到 ChatGPT 开始陪练</button><button class="btn warnbtn" data-speak-mark="weak">这个话题我会卡住</button><button class="btn goodbtn" data-speak-mark="ok">这个话题比较熟</button></div>
+ <div class="section-title">Self-check after speaking</div><div class="card" style="box-shadow:none"><div class="score-grid">${[['fc','Fluency & Coherence'],['lr','Lexical Resource'],['gra','Grammar'],['pr','Pronunciation']].map(([k,l])=>`<label>${l}<select class="select speaking-score" data-score="${k}"><option value="">–</option>${[5,5.5,6,6.5,7,7.5,8,8.5,9].map(v=>`<option ${String(scores[k]||'')===String(v)?'selected':''}>${v}</option>`).join('')}</select></label>`).join('')}</div></div>
+ <div class="section-title">Personal Material Notes</div><div class="card" style="box-shadow:none"><textarea id="speaking-note" class="speak-note" placeholder="写关键词，不写完整背诵稿：人物、地点、时间线、细节、可复用故事……">${esc(note)}</textarea><div class="meaning">建议只记 bullet points。目标是帮助你即兴展开，而不是背完整答案。</div></div>
+ </div>`;
+ $('timer-prep').onclick=()=>startSpeakingTimer(60,'PREP');$('timer-speak').onclick=()=>startSpeakingTimer(120,'SPEAK');$('timer-reset').onclick=resetSpeakingTimer;
+ document.querySelectorAll('[data-add-speak-vocab]').forEach(b=>b.onclick=()=>addSpeakingVocab(+b.dataset.addSpeakVocab));
+ document.querySelectorAll('[data-copy-speak]').forEach(b=>b.onclick=()=>copySpeakingPrompt(+b.dataset.copySpeak));
+ document.querySelectorAll('[data-speak-mark]').forEach(b=>b.onclick=()=>{ss.mastery[i]=b.dataset.speakMark;save();renderSpeaking()});
+ document.querySelectorAll('.speaking-score').forEach(sel=>sel.onchange=e=>{ss.scores[i]=ss.scores[i]||{};ss.scores[i][e.target.dataset.score]=e.target.value?Number(e.target.value):null;save()});
+ $('speaking-note').oninput=e=>{ss.notes[i]=e.target.value;save()};
+ const cats=[...new Set(SPEAKING_LAB.map(x=>x.category))].sort(),sel=$('speaking-filter'),cur=sel.value;sel.innerHTML='<option value="">全部话题</option>'+cats.map(c=>`<option ${c===cur?'selected':''}>${esc(c)}</option>`).join('');renderSpeakingList();renderTimer();
+}
+function renderSpeakingList(){
+ const q=($('speaking-search').value||'').toLowerCase(),cat=$('speaking-filter').value;
+ $('speaking-list').innerHTML=SPEAKING_LAB.map((t,i)=>({t,i})).filter(({t})=>(!cat||t.category===cat)&&(!q||[t.title,t.category,t.signal,t.cue,...t.part1,...t.part3,...t.vocab.flat()].join(' ').toLowerCase().includes(q))).map(({t,i})=>{const s=speakingStatus(i),fam=s==='weak'?'fam-weak':s==='ok'?'fam-ok':'fam-new';return `<div class="speaking-mini" data-open-speaking="${i}"><div class="row"><span class="pill">${esc(t.category)}</span><span class="pill ${fam}">${s==='weak'?'待强化':s==='ok'?'已积累':'未标记'}</span></div><div class="t">${esc(t.title)}</div><div class="m">${esc(t.signal)}</div></div>`}).join('');
+ document.querySelectorAll('[data-open-speaking]').forEach(x=>x.onclick=()=>{setSpeakingIndex(+x.dataset.openSpeaking);window.scrollTo({top:0,behavior:'smooth'})})
+}
+$('speak-prev').onclick=()=>setSpeakingIndex(currentSpeakingIndex()-1);$('speak-next').onclick=()=>setSpeakingIndex(currentSpeakingIndex()+1);$('speaking-search').oninput=renderSpeakingList;$('speaking-filter').onchange=renderSpeakingList;
+
+function renderLanguage(){
+ const q=$('lang-search').value.toLowerCase(),s=$('lang-status').value;const list=state.seed.language.filter(x=>(!q||[x.expression,x.meaning,x.type,x.topic].join(' ').toLowerCase().includes(q))&&(!s||x.status===s));
+ $('language-list').innerHTML=list.map((x,idx)=>`<div class="bank-grid"><div><div class="expression">${esc(x.expression)}</div><div class="meaning">${esc(x.meaning)}</div></div><div>${esc(x.topic)}</div><div><span class="pill">${esc(x.type)}</span></div><div><select class="select lang-state" data-exp="${esc(x.expression)}"><option ${x.status==='New'?'selected':''}>New</option><option ${x.status==='Learning'?'selected':''}>Learning</option><option ${x.status==='Unstable'?'selected':''}>Unstable</option><option ${x.status==='Active'?'selected':''}>Active</option><option ${x.status==='Mastered'?'selected':''}>Mastered</option></select></div></div>`).join('');
+ document.querySelectorAll('.lang-state').forEach(sel=>sel.onchange=e=>{const item=state.seed.language.find(x=>x.expression===e.target.dataset.exp);if(item)item.status=e.target.value;save();renderAll()});
+}
+$('lang-search').oninput=renderLanguage;$('lang-status').onchange=renderLanguage;
+
+function renderErrors(){
+ $('error-table').innerHTML=state.seed.errors.map((x,i)=>`<tr><td class="bad">${esc(x.original)}</td><td class="good"><b>${esc(x.correct)}</b><div class="meaning">${esc(x.note)}</div></td><td>${esc(x.category)}</td><td>${x.occurrences}</td><td>${esc(x.status)}</td><td><button class="btn secondary err-cycle" data-i="${i}">${x.status==='Resolved'?'重新激活':'标记已解决'}</button></td></tr>`).join('');
+ document.querySelectorAll('.err-cycle').forEach(b=>b.onclick=()=>{const x=state.seed.errors[+b.dataset.i];x.status=x.status==='Resolved'?'Active':'Resolved';save();renderAll()});
+}
+
+function reviewLangItems(){return state.seed.language.filter(x=>['Unstable','Learning','New'].includes(x.status)).slice(0,10)}
+function renderReview(){
+ if($('review-diagnostic')) $('review-diagnostic').textContent=` · ${state.seed.language.length} language items / ${state.seed.errors.length} error items`;
+ $('review-language').innerHTML=reviewLangItems().map((x,i)=>`<div class="review-card"><b>${esc(x.expression)}</b><div class="meaning">${esc(x.meaning)} · ${esc(x.status)}</div><div class="row" style="margin-top:7px"><button class="btn goodbtn review-master" data-exp="${esc(x.expression)}">这次会了</button><button class="btn warnbtn review-again" data-exp="${esc(x.expression)}">继续复习</button></div></div>`).join('');
+ $('review-errors').innerHTML=state.seed.errors.filter(x=>x.status!=='Resolved').slice(0,10).map(x=>`<div class="review-card"><span class="bad">${esc(x.original)}</span><div class="good"><b>→ ${esc(x.correct)}</b></div><div class="meaning">${esc(x.category)} · ${esc(x.note)}</div></div>`).join('');
+ document.querySelectorAll('.review-master').forEach(b=>b.onclick=()=>{const x=state.seed.language.find(z=>z.expression===b.dataset.exp);if(x){x.correctStreak=(x.correctStreak||0)+1;x.reviewCount=(x.reviewCount||0)+1;x.status=x.correctStreak>=2?'Active':'Learning'}save();renderAll()});
+ document.querySelectorAll('.review-again').forEach(b=>b.onclick=()=>{const x=state.seed.language.find(z=>z.expression===b.dataset.exp);if(x){x.correctStreak=0;x.reviewCount=(x.reviewCount||0)+1;x.status='Unstable'}save();renderAll()});
+}
+
+function errorCounts(){const c={};state.seed.errors.forEach(x=>{if(x.status!=='Resolved')c[x.category]=(c[x.category]||0)+x.occurrences});return c}
+function masteryCounts(){const c={};state.seed.language.forEach(x=>c[x.status]=(c[x.status]||0)+1);return c}
+function renderBars(id,c){const total=Object.values(c).reduce((a,b)=>a+b,0)||1;$(id).innerHTML=Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="progress-row"><div>${esc(k)}</div><div class="bar"><span style="width:${Math.round(v/total*100)}%"></span></div><div>${Math.round(v/total*100)}%</div></div>`).join('')||'<div class="muted">暂无数据</div>'}
+function renderProgress(){
+ renderBars('prog-errors',errorCounts());renderBars('prog-mastery',masteryCounts());
+ const keys=Object.keys(state.days).sort().reverse();$('history').innerHTML=keys.length?keys.map(date=>{const d=ensureDay(state.days[date]),sets=d.archive.length+1,all=[...d.archive,{answers:d.answers,completed:d.completed,correctionImported:d.correctionImported}],answered=all.reduce((n,s)=>n+(s.answers||[]).filter(x=>String(x||'').trim()).length,0),total=sets*10,completed=all.filter(s=>s.completed).length,imports=all.filter(s=>s.correctionImported).length;return `<div class="review-card"><b>${date}</b> · ${sets} set(s)<div class="meaning">${answered}/${total} answered · ${completed}/${sets} completed · ${imports} correction pack(s) imported</div></div>`}).join(''):'<div class="muted">完成第一天练习后，这里会出现历史记录。</div>';
+}
+function essayStats(){
+ const t=$('essay').value;state.essay=t;save();const words=t.trim()?t.trim().split(/\s+/).length:0;const sent=(t.match(/[.!?]+(?=\s|$)/g)||[]).length;$('essay-words').textContent=words;$('essay-sentences').textContent=sent;
+ const lower=t.toLowerCase();const watch=['however','therefore','moreover','furthermore','in addition','on the other hand','lead to','important','people'];
+ const hits=watch.map(w=>[w,(lower.match(new RegExp('\\b'+w.replace(' ','\\s+')+'\\b','g'))||[]).length]).filter(x=>x[1]>=3);
+ $('reuse-watch').innerHTML=hits.length?hits.map(([w,n])=>`<div class="due"><b>${esc(w)}</b> 出现 ${n} 次：考虑换表达或重构句子。</div>`).join(''):'<span class="muted">目前未发现明显的高频重复表达。</span>';
+}
+$('essay').value=state.essay||'';$('essay').oninput=essayStats;$('save-essay').onclick=()=>{essayStats();alert('草稿已保存到本机。')};
+$('copy-essay').onclick=()=>{navigator.clipboard.writeText($('essay').value);alert('作文已复制。')};
+
+
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ielts-learning-os-backup-${localDate()}.json`;a.click();URL.revokeObjectURL(a.href)};
+$('import-btn').onclick=()=>$('import-file').click();$('import-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{state=hydrateState(JSON.parse(await f.text()));save();renderAll();alert('备份已导入并完成数据兼容。')}catch(err){alert('文件格式无效。')}};
+$('repair-data').onclick=()=>{
+  const keepDays=state.days||{},keepEssay=state.essay||'',keepTopic=state.topicLab||{daily:{},mastery:{},notes:{}},keepSpeaking=state.speakingLab||{daily:{},mastery:{},notes:{},scores:{}};
+  state=freshState();state.days=keepDays;state.essay=keepEssay;state.topicLab=keepTopic;state.speakingLab=keepSpeaking;
+  save();renderAll();
+  alert('已重新载入内置题库与语言数据；你的作答、写作素材和口语素材已保留。');
+};
+$('reset').onclick=()=>{if(confirm('确认清除本机学习记录并恢复初始状态？')){localStorage.removeItem(KEY);state=freshState();save();$('essay').value='';renderAll()}};
+
+function renderAll(){
+  const modules=[
+    ['Dashboard',renderDashboard],
+    ['Daily Practice',renderPractice],
+    ['Topic Lab',renderTopicLab],
+    ['Speaking Lab',renderSpeaking],
+    ['Review Queue',renderReview],
+    ['Language Bank',renderLanguage],
+    ['Error Bank',renderErrors],
+    ['Progress',renderProgress],
+    ['Writing Studio',essayStats]
+  ];
+  const failures=[];
+  for(const [name,fn] of modules){
+    try{fn()}catch(e){console.error(name,e);failures.push(name)}
+  }
+  const answered=Object.values(state.days||{}).reduce((n,d)=>{d=ensureDay(d);return n+d.answers.filter(x=>String(x||'').trim()).length+d.archive.reduce((m,s)=>m+(s.answers||[]).filter(x=>String(x||'').trim()).length,0)},0);
+  const status=$('data-status');
+  if(status) status.textContent=`v${state.version||'2.3.2'} · ${state.seed.topicPacks.length} topic packs · ${state.seed.language.length} language items · ${state.seed.errors.length} error items · ${TOPIC_LAB.length} writing capsules · ${SPEAKING_LAB.length} speaking capsules · ${answered} saved answers${failures.length?' · render issue: '+failures.join(', '):''}`;
+}
+renderAll();
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW registration failed',e)));
+}
+function updateNavState(page){
+  document.querySelectorAll('[data-mobile-page]').forEach(b=>b.classList.toggle('active',b.dataset.mobilePage===page));
+}
+const originalSetPage=setPage;
+setPage=function(id){
+  if(!document.getElementById(id)) return;
+  originalSetPage(id);
+  updateNavState(id);
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest && e.target.closest('[data-mobile-page]');
+  if(!b)return;
+  e.preventDefault();
+  const page=b.dataset.mobilePage;
+  setPage(page);
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+const installBtn=$('install-app');
+if(installBtn) installBtn.onclick=async()=>{
+  if(deferredInstallPrompt){deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null}
+  else alert('如果浏览器没有弹出安装提示：iPhone/iPad 请使用 Safari 的“分享 → 添加到主屏幕”；Chrome/Edge 可在地址栏或菜单中选择“安装应用”。');
+};
+const SYNC_CODE_KEY='ielts_os_sync_code';
+const SYNC_META_KEY='ielts_os_sync_meta';
+const SYNC_ENDPOINT='https://ciwdleclhsxtocwujpoi.supabase.co/functions/v1/ielts-personal-sync';
+let syncTimer=null, syncInProgress=false;
+
+function syncCode(){return (localStorage.getItem(SYNC_CODE_KEY)||'').trim()}
+function setSyncStatus(text,kind='muted'){
+  if($('sync-status')){$('sync-status').textContent=text;$('sync-status').className=kind}
+  if($('sync-badge')) $('sync-badge').textContent=syncCode()?'已同步':'本机保存';
+}
+function updateLastSyncLabel(){
+  const meta=JSON.parse(localStorage.getItem(SYNC_META_KEY)||'{}');
+  if($('last-sync')) $('last-sync').textContent=meta.lastSyncedAt?`Synced ${new Date(meta.lastSyncedAt).toLocaleString()}`:'尚未同步';
+}
+function mergeArraysByIndex(local=[],remote=[],fallback=null){
+  const n=Math.max(local?.length||0,remote?.length||0),out=[];
+  for(let i=0;i<n;i++){
+    const l=local?.[i],r=remote?.[i];
+    out[i]=(l!==undefined&&l!==null&&String(l)!=='')?l:(r!==undefined?r:fallback);
+  }
+  return out;
+}
+function mergeDayState(l={},r={},date=''){
+  l=ensureDay(clone(l||{}));r=ensureDay(clone(r||{}));
+  const sessionId=x=>x?.session_id||`${date}-S${Number(x?.setNo)||1}`;
+  const archiveMap=new Map();
+  const putArchive=x=>{if(!x)return;const k=sessionId(x);if(!archiveMap.has(k))archiveMap.set(k,clone(x));else{
+    const a=archiveMap.get(k),b=x;
+    archiveMap.set(k,{...a,...b,
+      answers:mergeArraysByIndex(b.answers||[],a.answers||[],''),
+      ratings:mergeArraysByIndex(b.ratings||[],a.ratings||[],null),
+      corrections:mergeArraysByIndex(b.corrections||[],a.corrections||[],null),
+      completed:!!(a.completed||b.completed),
+      correctionImported:!!(a.correctionImported||b.correctionImported)
+    });
+  }};
+  (r.archive||[]).forEach(putArchive);(l.archive||[]).forEach(putArchive);
+  const ls=Number(l.setNo)||1,rs=Number(r.setNo)||1;
+  let out;
+  if(ls>rs){
+    putArchive({session_id:`${date}-S${rs}`,...r});
+    out=clone(l);
+  }else if(rs>ls){
+    putArchive({session_id:`${date}-S${ls}`,...l});
+    out=clone(r);
+  }else{
+    out={...r,...l};
+    out.answers=mergeArraysByIndex(l.answers||[],r.answers||[],'');
+    out.shown=mergeArraysByIndex(l.shown||[],r.shown||[],false).map(Boolean);
+    out.ratings=mergeArraysByIndex(l.ratings||[],r.ratings||[],null);
+    out.corrections=mergeArraysByIndex(l.corrections||[],r.corrections||[],null);
+    out.completed=!!(l.completed||r.completed);
+    out.correctionImported=!!(l.correctionImported||r.correctionImported);
+    out.items=(Array.isArray(l.items)&&l.items.length)?clone(l.items):clone(r.items||null);
+    out.topic=l.topic||r.topic;out.focus=l.focus||r.focus;
+  }
+  out.setNo=Math.max(ls,rs);
+  // Never archive the current set.
+  archiveMap.delete(`${date}-S${out.setNo}`);
+  out.archive=[...archiveMap.values()].sort((a,b)=>(Number(a.setNo)||0)-(Number(b.setNo)||0));
+  return ensureDay(out);
+}
+function mergeLanguage(local=[],remote=[]){
+  const map=new Map();
+  for(const x of remote||[]) if(x?.expression) map.set(String(x.expression).trim().toLowerCase(),clone(x));
+  for(const x of local||[]){
+    if(!x?.expression)continue;
+    const k=String(x.expression).trim().toLowerCase(),r=map.get(k);
+    if(!r){map.set(k,clone(x));continue}
+    const lr=Number(x.reviewCount)||0,rr=Number(r.reviewCount)||0;
+    map.set(k,{...r,...x,
+      reviewCount:Math.max(lr,rr),
+      correctStreak:Math.max(Number(x.correctStreak)||0,Number(r.correctStreak)||0),
+      status:lr>=rr?(x.status||r.status):(r.status||x.status),
+      meaning:x.meaning||r.meaning,
+      topic:x.topic||r.topic,
+      type:x.type||r.type
+    });
+  }
+  return [...map.values()];
+}
+function errorKey(x){return String(x?.patternKey||`${x?.original||''}→${x?.correct||''}`).trim().toLowerCase()}
+function mergeErrors(local=[],remote=[]){
+  const map=new Map();
+  for(const x of remote||[]) if(x)map.set(errorKey(x),clone(x));
+  for(const x of local||[]){
+    if(!x)continue;const k=errorKey(x),r=map.get(k);
+    if(!r){map.set(k,clone(x));continue}
+    const lo=Number(x.occurrences)||1,ro=Number(r.occurrences)||1;
+    map.set(k,{...r,...x,occurrences:Math.max(lo,ro),status:(lo>=ro?(x.status||r.status):(r.status||x.status)),note:x.note||r.note,correct:x.correct||r.correct});
+  }
+  return [...map.values()];
+}
+function mergeTopicLab(l={},r={}){
+  const notes={...(r.notes||{})};
+  for(const [k,v] of Object.entries(l.notes||{})) if(String(v||'').trim())notes[k]=v;
+  return {daily:{...(r.daily||{}),...(l.daily||{})},mastery:{...(r.mastery||{}),...(l.mastery||{})},notes};
+}
+function mergeSpeakingLab(l={},r={}){
+ const notes={...(r.notes||{})};for(const [k,v] of Object.entries(l.notes||{}))if(String(v||'').trim())notes[k]=v;
+ return {daily:{...(r.daily||{}),...(l.daily||{})},mastery:{...(r.mastery||{}),...(l.mastery||{})},notes,scores:{...(r.scores||{}),...(l.scores||{})}};
+}
+function mergeStates(localState,remoteState){
+  const l=hydrateState(localState||freshState()),r=hydrateState(remoteState||freshState()),out=hydrateState(r);
+  out.days={...(r.days||{})};
+  for(const [date,d] of Object.entries(l.days||{})) out.days[date]=out.days[date]?mergeDayState(d,out.days[date],date):clone(d);
+  out.seed.topicPacks=(l.seed?.topicPacks?.length?l.seed.topicPacks:r.seed.topicPacks);
+  out.seed.language=mergeLanguage(l.seed?.language||[],r.seed?.language||[]);
+  out.seed.errors=mergeErrors(l.seed?.errors||[],r.seed?.errors||[]);
+  out.topicLab=mergeTopicLab(l.topicLab||{},r.topicLab||{});
+  out.speakingLab=mergeSpeakingLab(l.speakingLab||{},r.speakingLab||{});
+  out.history=[...(r.history||[]),...(l.history||[])].filter((x,i,a)=>a.findIndex(y=>JSON.stringify(y)===JSON.stringify(x))===i);
+  out.essay=(l.essay&&l.essay.trim())?l.essay:(r.essay||'');
+  out.version='2.3.2';
+  return out;
+}
+async function cloudSync({quiet=false}={}){
+  const code=syncCode();
+  if(!code||syncInProgress||!navigator.onLine)return;
+  syncInProgress=true;
+  if(!quiet)setSyncStatus('同步中…');
+  try{
+    const headers={'x-sync-code':code,'Content-Type':'application/json'};
+    const read=await fetch(SYNC_ENDPOINT,{method:'GET',headers});
+    const remote=await read.json().catch(()=>({}));
+    if(!read.ok){
+      if(remote.error==='invalid_sync_code')throw new Error('同步码 不正确');
+      throw new Error(remote.detail||remote.error||`读取失败 ${read.status}`);
+    }
+    const merged=remote.exists&&remote.data?mergeStates(state,remote.data):hydrateState(state);
+    const write=await fetch(SYNC_ENDPOINT,{method:'POST',headers,body:JSON.stringify({data:merged})});
+    const wr=await write.json().catch(()=>({}));
+    if(!write.ok)throw new Error(wr.detail||wr.error||`写入失败 ${write.status}`);
+    state=merged;
+    localStorage.setItem(KEY,JSON.stringify(state));
+    localStorage.setItem(SYNC_META_KEY,JSON.stringify({lastSyncedAt:wr.updated_at||new Date().toISOString(),revision:wr.revision||0}));
+    renderAll();updateLastSyncLabel();setSyncStatus('已同步','good');
+  }catch(e){
+    console.warn('已同步 failed',e);
+    if(!quiet)setSyncStatus('同步失败：'+(e.message||String(e)),'bad');
+  }finally{syncInProgress=false}
+}
+function scheduleCloudSync(){
+  if(syncInProgress||!syncCode())return;
+  clearTimeout(syncTimer);syncTimer=setTimeout(()=>cloudSync({quiet:true}),5000);
+}
+if($('sync-code')) $('sync-code').value=syncCode();
+setSyncStatus(syncCode()?'已同步 ready':'本机保存');
+updateLastSyncLabel();
+$('save-sync-code').onclick=async()=>{
+  const v=$('sync-code').value.trim();
+  if(v){
+    localStorage.setItem(SYNC_CODE_KEY,v);setSyncStatus('同步码已保存在本机');await cloudSync();
+  }else{
+    localStorage.removeItem(SYNC_CODE_KEY);setSyncStatus('已清除');updateLastSyncLabel();
+  }
+};
+$('sync-now').onclick=()=>cloudSync();
+window.addEventListener('online',()=>scheduleCloudSync());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&syncCode())cloudSync({quiet:true})});
+if(syncCode())setTimeout(()=>cloudSync({quiet:true}),1200);
+
+</script>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+<button data-mobile-page="dashboard" class="active"><span>⌂</span>Today</button>
+<button data-mobile-page="speaking"><span>◉</span>Speak</button>
+<button data-mobile-page="topics"><span>◫</span>Topic</button>
+<button data-mobile-page="review"><span>↻</span>Review</button>
+<button data-mobile-page="language"><span>▤</span>Bank</button>
+<button data-mobile-page="data"><span>•••</span>More</button>
+</nav>
+
+</body></html>
